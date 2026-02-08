@@ -2,6 +2,18 @@
 // BAND OF MEN - Authentication Module
 // ============================================
 
+async function readResponseJson(response) {
+    // Netlify can return non-JSON bodies for errors (or empty bodies). Avoid throwing
+    // a JSON parse error that hides the real HTTP status.
+    const text = await response.text();
+    if (!text) return {};
+    try {
+        return JSON.parse(text);
+    } catch {
+        return { message: text };
+    }
+}
+
 const Auth = {
     // Storage keys
     TOKEN_KEY: 'bom_auth_token',
@@ -46,10 +58,10 @@ const Auth = {
                 body: JSON.stringify({ email, password, name, verificationCode })
             });
 
-            const data = await response.json();
+            const data = await readResponseJson(response);
 
             if (!response.ok) {
-                throw new Error(data.error || 'Signup failed');
+                throw new Error(data.error || data.message || `Signup failed (${response.status})`);
             }
 
             // If verification is required, return that status
@@ -75,10 +87,10 @@ const Auth = {
                 body: JSON.stringify({ email, type })
             });
 
-            const data = await response.json();
+            const data = await readResponseJson(response);
 
             if (!response.ok) {
-                throw new Error(data.error || 'Failed to send code');
+                throw new Error(data.error || data.message || `Failed to send code (${response.status})`);
             }
 
             return { success: true };
@@ -98,10 +110,10 @@ const Auth = {
                 body: JSON.stringify({ email, password, twoFactorCode })
             });
 
-            const data = await response.json();
+            const data = await readResponseJson(response);
 
             if (!response.ok) {
-                throw new Error(data.error || 'Login failed');
+                throw new Error(data.error || data.message || `Login failed (${response.status})`);
             }
 
             // If 2FA is required, return that status
@@ -154,7 +166,7 @@ const Auth = {
                 return false;
             }
 
-            const data = await response.json();
+            const data = await readResponseJson(response);
             // Update stored user data
             localStorage.setItem(this.USER_KEY, JSON.stringify(data.user));
             return true;
