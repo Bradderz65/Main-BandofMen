@@ -99,6 +99,11 @@ h2 {
 .text-center { text-align: center; }
 .section-padding { padding: var(--spacing-section) 0; }
 
+/* Anchor scroll offset for fixed header (single rule across devices). */
+section[id] {
+    scroll-margin-top: calc(var(--header-height-dyn, var(--header-height)) + var(--page-top-gap) + env(safe-area-inset-top));
+}
+
 /* --- Animations --- */
 @keyframes fadeIn {
     from { opacity: 0; }

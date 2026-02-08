@@ -23,4 +23,7 @@
     /* Spacing */
     --spacing-section: 100px;
     --header-height: 70px;
+    /* Global top/bottom offsets below the fixed header (single rule across devices) */
+    --page-top-gap: clamp(24px, 5vw, 64px);
+    --page-bottom-gap: clamp(24px, 4vw, 56px);
 }

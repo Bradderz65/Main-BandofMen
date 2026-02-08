@@ -257,3 +257,64 @@
     line-height: 1.5;
     margin: 0;
 }
+
+/* --- Open / Closed Status --- */
+.open-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-main);
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    width: fit-content;
+}
+
+.open-status:empty {
+    display: none;
+}
+
+.open-status__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #36d17c;
+    box-shadow: 0 0 0 4px rgba(54, 209, 124, 0.18);
+    flex: 0 0 auto;
+}
+
+.open-status.is-closed .open-status__dot {
+    background: #ff5b5b;
+    box-shadow: 0 0 0 4px rgba(255, 91, 91, 0.18);
+}
+
+.open-status__detail {
+    color: var(--text-muted);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+}
+
+.open-status--hero {
+    margin: 0 0 18px;
+    background: rgba(6, 12, 10, 0.78);
+    border-color: rgba(197, 160, 89, 0.45);
+    box-shadow: 0 12px 34px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    align-self: flex-start;
+    margin-left: 0;
+}
+
+.open-status--hero .open-status__detail {
+    color: rgba(255, 255, 255, 0.72);
+}
+
+.open-status--compact {
+    margin: 12px 0 18px;
+}

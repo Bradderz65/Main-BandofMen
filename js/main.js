@@ -6,6 +6,23 @@
 
 // Smooth scroll for anchor links
 document.addEventListener('DOMContentLoaded', () => {
+    // Keep a CSS var in sync with the real header height (header can change height on some mobile landscape widths).
+    const updateHeaderHeightVar = () => {
+        const header = document.querySelector('header');
+        if (!header) return;
+        const h = Math.ceil(header.getBoundingClientRect().height);
+        document.documentElement.style.setProperty('--header-height-dyn', `${h}px`);
+    };
+
+    updateHeaderHeightVar();
+    window.addEventListener('resize', () => {
+        // Wait a tick so layout settles (especially on orientation changes).
+        window.requestAnimationFrame(updateHeaderHeightVar);
+    }, { passive: true });
+    window.addEventListener('orientationchange', () => {
+        setTimeout(updateHeaderHeightVar, 150);
+    }, { passive: true });
+
     // Handle smooth scrolling for all anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
