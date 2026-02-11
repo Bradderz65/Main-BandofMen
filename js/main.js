@@ -78,26 +78,16 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(mapSide);
     }
 
+    // Header style state
+    const header = document.querySelector('header');
+    const syncHeaderScrollState = () => {
+        if (!header) return;
+        header.classList.toggle('scrolled', window.scrollY > 24);
+    };
+    syncHeaderScrollState();
+    window.addEventListener('scroll', syncHeaderScrollState, { passive: true });
+
     // Console branding
     console.log('%c BAND OF MEN ', 'background: #c5a059; color: #080f0d; font-size: 20px; font-weight: bold; padding: 10px;');
     console.log('%c Legendary Grooming ', 'color: #8ca39d; font-size: 12px;');
 });
-
-// Scroll-based header styling (optional enhancement)
-let lastScrollY = window.scrollY;
-
-window.addEventListener('scroll', () => {
-    const header = document.querySelector('header');
-    if (!header) return;
-
-    const currentScrollY = window.scrollY;
-
-    // Add shadow on scroll
-    if (currentScrollY > 50) {
-        header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.3)';
-    } else {
-        header.style.boxShadow = 'none';
-    }
-
-    lastScrollY = currentScrollY;
-}, { passive: true });

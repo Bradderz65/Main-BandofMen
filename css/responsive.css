@@ -53,16 +53,26 @@
     /* Contact */
     .contact-split { 
         grid-template-columns: 1fr; 
+        min-height: auto;
     }
     
     .info-side { 
         order: 1; 
-        padding: 50px 20px; 
+        padding: 40px 20px; 
+        justify-content: flex-start;
     }
     
     .map-side { 
         order: 2; 
-        height: 300px; 
+        height: 320px; 
+    }
+
+    .map-side iframe {
+        min-height: 0;
+    }
+
+    .hours-grid {
+        max-width: 100%;
     }
     
     /* Typography */
