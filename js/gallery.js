@@ -20,6 +20,86 @@ const Gallery = {
         // Show first 4 items initially
         this.showInitialItems();
         this.syncButtons();
+        
+        // Initialize lightbox
+        this.initLightbox();
+    },
+
+    initLightbox() {
+        // Create lightbox elements
+        const lightbox = document.createElement('div');
+        lightbox.id = 'lightbox';
+        lightbox.className = 'lightbox';
+        lightbox.innerHTML = `
+            <button class="lightbox-close" aria-label="Close">&times;</button>
+            <button class="lightbox-prev" aria-label="Previous">&#10094;</button>
+            <img class="lightbox-img" src="" alt="">
+            <button class="lightbox-next" aria-label="Next">&#10095;</button>
+        `;
+        document.body.appendChild(lightbox);
+        
+        // Add click handlers to gallery images
+        const items = document.querySelectorAll('.gallery-item img');
+        items.forEach((img, index) => {
+            img.style.cursor = 'pointer';
+            img.addEventListener('click', () => this.openLightbox(index));
+        });
+        
+        // Close handlers
+        lightbox.querySelector('.lightbox-close').addEventListener('click', () => this.closeLightbox());
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) this.closeLightbox();
+        });
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (!lightbox.classList.contains('active')) return;
+            if (e.key === 'Escape') this.closeLightbox();
+            if (e.key === 'ArrowLeft') this.prevImage();
+            if (e.key === 'ArrowRight') this.nextImage();
+        });
+        
+        // Prev/Next buttons
+        lightbox.querySelector('.lightbox-prev').addEventListener('click', () => this.prevImage());
+        lightbox.querySelector('.lightbox-next').addEventListener('click', () => this.nextImage());
+    },
+
+    openLightbox(index) {
+        this.currentImageIndex = index;
+        const lightbox = document.getElementById('lightbox');
+        const img = lightbox.querySelector('.lightbox-img');
+        const items = document.querySelectorAll('.gallery-item img');
+        
+        img.src = items[index].src;
+        img.alt = items[index].alt;
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    },
+
+    closeLightbox() {
+        const lightbox = document.getElementById('lightbox');
+        lightbox.classList.remove('active');
+        document.body.style.overflow = '';
+    },
+
+    prevImage() {
+        const items = document.querySelectorAll('.gallery-item img');
+        this.currentImageIndex = (this.currentImageIndex - 1 + items.length) % items.length;
+        this.updateLightboxImage();
+    },
+
+    nextImage() {
+        const items = document.querySelectorAll('.gallery-item img');
+        this.currentImageIndex = (this.currentImageIndex + 1) % items.length;
+        this.updateLightboxImage();
+    },
+
+    updateLightboxImage() {
+        const items = document.querySelectorAll('.gallery-item img');
+        const lightbox = document.getElementById('lightbox');
+        const img = lightbox.querySelector('.lightbox-img');
+        img.src = items[this.currentImageIndex].src;
+        img.alt = items[this.currentImageIndex].alt;
     },
 
     getHeaderOffset() {
