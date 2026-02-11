@@ -62,6 +62,54 @@ const Gallery = {
         // Prev/Next buttons
         lightbox.querySelector('.lightbox-prev').addEventListener('click', () => this.prevImage());
         lightbox.querySelector('.lightbox-next').addEventListener('click', () => this.nextImage());
+        
+        // Touch/Swipe support for mobile
+        this.initSwipeHandlers(lightbox);
+    },
+
+    initSwipeHandlers(lightbox) {
+        let touchStartX = 0;
+        let touchEndX = 0;
+        const minSwipeDistance = 50;
+        
+        const img = lightbox.querySelector('.lightbox-img');
+        
+        img.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+        
+        img.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            this.handleSwipe(touchStartX, touchEndX, minSwipeDistance);
+        }, { passive: true });
+        
+        // Also allow swiping on the entire lightbox background
+        lightbox.addEventListener('touchstart', (e) => {
+            if (e.target === lightbox) {
+                touchStartX = e.changedTouches[0].screenX;
+            }
+        }, { passive: true });
+        
+        lightbox.addEventListener('touchend', (e) => {
+            if (e.target === lightbox) {
+                touchEndX = e.changedTouches[0].screenX;
+                this.handleSwipe(touchStartX, touchEndX, minSwipeDistance);
+            }
+        }, { passive: true });
+    },
+
+    handleSwipe(startX, endX, minDistance) {
+        const swipeDistance = endX - startX;
+        
+        if (Math.abs(swipeDistance) > minDistance) {
+            if (swipeDistance > 0) {
+                // Swiped right - go to previous
+                this.prevImage();
+            } else {
+                // Swiped left - go to next
+                this.nextImage();
+            }
+        }
     },
 
     openLightbox(index) {
