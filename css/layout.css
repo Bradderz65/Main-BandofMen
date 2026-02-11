@@ -370,30 +370,47 @@ header.scrolled {
     flex-wrap: wrap; 
 }
 
-/* --- Shared Contrast Flow (Gallery + Service Menu) --- */
-.section-contrast-flow {
+/* --- Gallery / Menu Tone Separation --- */
+.section-gallery-tone {
     position: relative;
+    background: linear-gradient(180deg, #0b1613 0%, #0e1b17 100%);
     overflow: hidden;
-    background: linear-gradient(180deg, #0b1613 0%, #101f1a 50%, #131c16 100%);
 }
 
-.section-contrast-flow::before {
+.section-gallery-tone::before {
     content: "";
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(circle at 18% 20%, rgba(var(--accent-gold-rgb), 0.11), transparent 45%),
-        radial-gradient(circle at 82% 30%, rgba(38, 99, 72, 0.11), transparent 42%),
-        radial-gradient(circle at 22% 82%, rgba(var(--accent-gold-rgb), 0.08), transparent 46%);
+        radial-gradient(circle at 18% 22%, rgba(var(--accent-gold-rgb), 0.1), transparent 44%),
+        radial-gradient(circle at 82% 34%, rgba(38, 99, 72, 0.1), transparent 40%);
     pointer-events: none;
 }
 
-.section-contrast-flow > section {
+.section-pricing-tone {
     position: relative;
-    background: transparent;
+    background: #101915;
+    overflow: hidden;
 }
 
-.section-contrast-flow > section > .container {
+.section-pricing-tone::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url('../Photos/Branding/hero-forest.jpg');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.05;
+    filter: grayscale(30%) contrast(1) saturate(55%);
+    pointer-events: none;
+}
+
+.section-pricing-tone::after {
+    content: none;
+}
+
+.section-gallery-tone > .container,
+.section-pricing-tone > .container {
     position: relative;
     z-index: 1;
 }
