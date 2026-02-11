@@ -43,7 +43,7 @@
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/layout.css">
     <link rel="stylesheet" href="css/responsive.css">
-    <link rel="stylesheet" href="css/auth.css">
+    <!-- <link rel="stylesheet" href="css/auth.css"> -->
 </head>
 <body class="preloading">
 
@@ -80,6 +80,7 @@
             
             <!-- Desktop Auth & CTA -->
             <div class="desktop-actions">
+                <!-- LOGIN / ACCOUNT UI (commented out)
                 <button class="auth-btn" id="authBtn" onclick="openAuthModal('login')">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                     Login
@@ -95,6 +96,7 @@
                         <button class="user-dropdown-item" onclick="handleLogout()">Sign Out</button>
                     </div>
                 </div>
+                -->
                 <a href="https://booksy.com/en-gb/122744_band-of-men-barber-salon_barber_1485625_robin-hood" target="_blank" class="btn-primary desktop-btn">Book Seat</a>
             </div>
 
@@ -120,7 +122,7 @@
             <!-- Mobile Action Buttons -->
             <div class="mobile-menu-actions">
                 <a href="https://booksy.com/en-gb/122744_band-of-men-barber-salon_barber_1485625_robin-hood" target="_blank" class="btn-primary mobile-menu-btn">Book Now</a>
-                <button class="mobile-auth-btn" id="mobileAuthBtn" onclick="closeMenu(); openAuthModal('login');">Login</button>
+                <!-- <button class="mobile-auth-btn" id="mobileAuthBtn" onclick="closeMenu(); openAuthModal('login');">Login</button> -->
             </div>
         </div>
     </div>
@@ -737,7 +739,7 @@
         </div>
     </footer>
 
-    <!-- AUTH MODAL -->
+    <!-- AUTH MODAL (commented out)
     <div class="auth-modal" id="authModal">
         <div class="auth-modal-content">
             <button class="auth-close" onclick="closeAuthModal()">&times;</button>
@@ -753,70 +755,16 @@
             </div>
             
             <div class="auth-forms">
-                <!-- Login Form -->
-                <form class="auth-form active" id="loginForm" onsubmit="handleLogin(event)">
-                    <div class="auth-error"></div>
-                    
-                    <div class="auth-form-group">
-                        <label for="loginEmail">Email Address</label>
-                        <input type="email" id="loginEmail" placeholder="your@email.com" required>
-                    </div>
-                    
-                    <div class="auth-form-group">
-                        <label for="loginPassword">Password</label>
-                        <input type="password" id="loginPassword" placeholder="Enter your password" required>
-                    </div>
-                    
-                    <!-- 2FA Code Input (hidden by default) -->
-                    <div class="auth-form-group auth-verification-group" id="login2FAContainer" style="display: none;">
-                        <label for="login2FACode">Verification Code</label>
-                        <input type="text" id="login2FACode" placeholder="Enter 6-digit code" maxlength="6" pattern="[0-9]{6}">
-                        <button type="button" class="auth-resend-btn" onclick="resendCode('login_2fa')">Resend Code</button>
-                    </div>
-                    
-                    <button type="submit" class="auth-submit">Sign In</button>
-                </form>
-                
-                <!-- Signup Form -->
-                <form class="auth-form" id="signupForm" onsubmit="handleSignup(event)">
-                    <div class="auth-error"></div>
-                    
-                    <div class="auth-form-group">
-                        <label for="signupName">Full Name</label>
-                        <input type="text" id="signupName" placeholder="John Smith" required>
-                    </div>
-                    
-                    <div class="auth-form-group">
-                        <label for="signupEmail">Email Address</label>
-                        <input type="email" id="signupEmail" placeholder="your@email.com" required>
-                    </div>
-                    
-                    <div class="auth-form-group">
-                        <label for="signupPassword">Password</label>
-                        <input type="password" id="signupPassword" placeholder="Min. 8 characters" required>
-                    </div>
-                    
-                    <div class="auth-form-group">
-                        <label for="signupConfirmPassword">Confirm Password</label>
-                        <input type="password" id="signupConfirmPassword" placeholder="Confirm your password" required>
-                    </div>
-                    
-                    <!-- Email Verification Code Input (hidden by default) -->
-                    <div class="auth-form-group auth-verification-group" id="signupVerificationContainer" style="display: none;">
-                        <label for="signupVerificationCode">Email Verification Code</label>
-                        <input type="text" id="signupVerificationCode" placeholder="Enter 6-digit code" maxlength="6" pattern="[0-9]{6}">
-                        <button type="button" class="auth-resend-btn" onclick="resendCode('signup')">Resend Code</button>
-                    </div>
-                    
-                    <button type="submit" class="auth-submit">Create Account</button>
-                </form>
+                <form class="auth-form active" id="loginForm" onsubmit="handleLogin(event)"></form>
+                <form class="auth-form" id="signupForm" onsubmit="handleSignup(event)"></form>
             </div>
         </div>
     </div>
+    -->
 
     <!-- JavaScript Files -->
     <!-- Cache-bust auth script so error messages and flows update reliably after deploys -->
-    <script src="js/auth.js?v=20260208"></script>
+    <!-- <script src="js/auth.js?v=20260208"></script> -->
     <script src="js/preloader.js"></script>
     <script src="js/navigation.js"></script>
     <script src="js/gallery.js"></script>
