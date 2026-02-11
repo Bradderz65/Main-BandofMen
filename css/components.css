@@ -59,6 +59,10 @@
     color: var(--bg-deep);
 }
 
+.gallery-top-toggle {
+    margin-top: 20px;
+}
+
 /* --- Service Cards --- */
 .service-card {
     grid-column: span 4;

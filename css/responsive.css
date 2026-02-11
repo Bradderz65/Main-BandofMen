@@ -74,6 +74,14 @@
     .hours-grid {
         max-width: 100%;
     }
+
+    .contact-form {
+        max-width: 100%;
+    }
+
+    .contact-submit {
+        width: 100%;
+    }
     
     /* Typography */
     h1 { 

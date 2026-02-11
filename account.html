@@ -51,7 +51,7 @@
             <!-- Desktop Auth & CTA -->
             <div class="desktop-actions">
                 <!-- ACCOUNT MENU (commented out)
-                <div class="user-menu" id="userMenu" style="display: flex;">
+                <div class="user-menu" id="userMenu">
                     <button class="user-menu-btn" onclick="openUserDropdown()">
                         <span class="user-avatar" id="userAvatar">U</span>
                         <span id="userName">Account</span>
@@ -173,7 +173,7 @@
                         </div>
                         
                         <!-- 2FA Verification (hidden by default) -->
-                        <div class="twofa-verify" id="twofaVerifyContainer" style="display: none;">
+                        <div class="twofa-verify is-hidden" id="twofaVerifyContainer">
                             <div class="account-form-group">
                                 <label for="twofaCode">Enter Verification Code</label>
                                 <input type="text" id="twofaCode" placeholder="6-digit code" maxlength="6">
@@ -218,7 +218,25 @@
     <!-- FOOTER -->
     <footer>
         <div class="container">
-            <p>© 2025 Band of Men Barber Salon. All rights reserved.</p>
+            <p>© 2026 Band of Men Barber Salon. All rights reserved.</p>
+            <p class="footer-social-links">
+                <a href="https://www.instagram.com/bandofmenbarbers" target="_blank" rel="noopener noreferrer" aria-label="Band of Men on Instagram">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <rect x="3.5" y="3.5" width="17" height="17" rx="5"></rect>
+                        <circle cx="12" cy="12" r="4"></circle>
+                        <circle cx="17.5" cy="6.5" r="1"></circle>
+                    </svg>
+                    <span>bandofmenbarbers</span>
+                </a>
+                <span class="footer-social-separator" aria-hidden="true">·</span>
+                <a href="https://www.youtube.com/@bandofmenbarbers" target="_blank" rel="noopener noreferrer" aria-label="Band of Men on YouTube">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <rect x="2.5" y="6.5" width="19" height="11" rx="3.5"></rect>
+                        <polygon points="10,9 16,12 10,15"></polygon>
+                    </svg>
+                    <span>bandofmenbarbers</span>
+                </a>
+            </p>
         </div>
     </footer>
 
@@ -226,6 +244,7 @@
     <!-- Cache-bust auth script so error messages and flows update reliably after deploys -->
     <!-- <script src="js/auth.js?v=20260208"></script> -->
     <script src="js/navigation.js"></script>
+    <script src="js/sw-register.js"></script>
     <script src="js/account.js"></script>
 </body>
 </html>

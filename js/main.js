@@ -6,6 +6,25 @@
 
 // Smooth scroll for anchor links
 document.addEventListener('DOMContentLoaded', () => {
+    const supportsWebp = (() => {
+        try {
+            const canvas = document.createElement('canvas');
+            return canvas.toDataURL('image/webp').startsWith('data:image/webp');
+        } catch (e) {
+            return false;
+        }
+    })();
+
+    window.__bomSupportsWebp = supportsWebp;
+
+    if (supportsWebp) {
+        document.querySelectorAll('img[src$=".jpeg"], img[src$=".jpg"]').forEach((img) => {
+            const src = img.getAttribute('src');
+            if (!src) return;
+            img.setAttribute('src', src.replace(/\.(jpe?g)$/i, '.webp'));
+        });
+    }
+
     // Keep a CSS var in sync with the real header height (header can change height on some mobile landscape widths).
     const updateHeaderHeightVar = () => {
         const header = document.querySelector('header');

@@ -188,7 +188,7 @@ async function handleToggle2FA() {
         
         if (response.ok) {
             // Show verification input
-            document.getElementById('twofaVerifyContainer').style.display = 'block';
+            document.getElementById('twofaVerifyContainer').classList.remove('is-hidden');
             show2FASuccess('Verification code sent to your email');
         } else {
             // Revert toggle
@@ -244,7 +244,7 @@ async function confirmToggle2FA() {
             }
             
             // Hide verification input
-            document.getElementById('twofaVerifyContainer').style.display = 'none';
+            document.getElementById('twofaVerifyContainer').classList.add('is-hidden');
             document.getElementById('twofaCode').value = '';
             pending2FAAction = null;
         } else {

@@ -11,6 +11,15 @@ const Gallery = {
     isExpanded: false,
     openedAtY: null,
     openedAtTargetY: null,
+    deferredLoaded: false,
+
+    getBestSrc(src) {
+        if (!src) return src;
+        if (window.__bomSupportsWebp === true) {
+            return src.replace(/\.(jpe?g)$/i, '.webp');
+        }
+        return src;
+    },
 
     init() {
         this.grid = document.getElementById('gallery-grid');
@@ -19,6 +28,7 @@ const Gallery = {
         
         // Show first 4 items initially
         this.showInitialItems();
+        this.prepareDeferredImages();
         this.syncButtons();
         
         // Initialize lightbox
@@ -42,6 +52,7 @@ const Gallery = {
         const items = document.querySelectorAll('.gallery-item img');
         items.forEach((img, index) => {
             img.style.cursor = 'pointer';
+            img.decoding = 'async';
             img.addEventListener('click', () => this.openLightbox(index));
         });
         
@@ -113,6 +124,7 @@ const Gallery = {
     },
 
     openLightbox(index) {
+        this.ensureImageLoaded(index);
         this.currentImageIndex = index;
         const lightbox = document.getElementById('lightbox');
         const img = lightbox.querySelector('.lightbox-img');
@@ -143,6 +155,7 @@ const Gallery = {
     },
 
     updateLightboxImage() {
+        this.ensureImageLoaded(this.currentImageIndex);
         const items = document.querySelectorAll('.gallery-item img');
         const lightbox = document.getElementById('lightbox');
         const img = lightbox.querySelector('.lightbox-img');
@@ -185,6 +198,40 @@ const Gallery = {
         });
     },
 
+    prepareDeferredImages() {
+        if (!this.grid) return;
+
+        const deferred = this.grid.querySelectorAll('.gallery-item:nth-child(n+5) img');
+        deferred.forEach((img) => {
+            if (img.dataset.src || !img.src) return;
+            img.dataset.src = img.getAttribute('src');
+            img.removeAttribute('src');
+        });
+    },
+
+    ensureImageLoaded(index) {
+        const items = document.querySelectorAll('.gallery-item img');
+        const img = items[index];
+        if (!img || img.getAttribute('src') || !img.dataset.src) return;
+
+        img.src = this.getBestSrc(img.dataset.src);
+        img.removeAttribute('data-src');
+    },
+
+    loadDeferredImages() {
+        if (!this.grid || this.deferredLoaded) return;
+
+        const deferred = this.grid.querySelectorAll('.gallery-item:nth-child(n+5) img');
+        deferred.forEach((img) => {
+            if (!img.getAttribute('src') && img.dataset.src) {
+                img.src = this.getBestSrc(img.dataset.src);
+                img.removeAttribute('data-src');
+            }
+        });
+
+        this.deferredLoaded = true;
+    },
+
     toggle() {
         if (!this.grid || !this.buttonTop) return;
 
@@ -199,6 +246,7 @@ const Gallery = {
 
     expand() {
         this.rememberOpenPosition();
+        this.loadDeferredImages();
         this.grid.classList.add('expanded');
         this.setButtonText('Show Less');
         

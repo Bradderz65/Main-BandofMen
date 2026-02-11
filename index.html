@@ -155,12 +155,12 @@
                 <div>
                     <div class="subtitle">THE BROTHERHOOD</div>
                     <h2>More Than A<br>Barber Shop.</h2>
-                    <p class="text-muted" style="margin-bottom: 20px;">
+                    <p class="text-muted u-mb-20">
                         Located at 200 Leadwell Lane, we are not just cutting hair; we are sharpening identities. Band of Men Barber Salon brings the atmosphere of an exclusive gentlemen's club to Robin Hood.
                     </p>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <div><h4 class="text-gold">5.0 ★</h4><span class="text-muted" style="font-size: 0.85rem;">200+ Reviews</span></div>
-                        <div><h4 class="text-gold">Est.</h4><span class="text-muted" style="font-size: 0.85rem;">In Robin Hood</span></div>
+                    <div class="about-stats-grid">
+                        <div><h4 class="text-gold">5.0 ★</h4><span class="text-muted stat-note">200+ Reviews</span></div>
+                        <div><h4 class="text-gold">Est.</h4><span class="text-muted stat-note">In Robin Hood</span></div>
                     </div>
                 </div>
             </div>
@@ -170,7 +170,7 @@
     <!-- AMENITIES SECTION -->
     <section id="amenities" class="section-padding amenities-section">
         <div class="container">
-            <div class="text-center" style="margin-bottom: 50px;">
+            <div class="text-center section-heading">
                 <div class="subtitle">WHAT WE OFFER</div>
                 <h2>Amenities</h2>
             </div>
@@ -235,10 +235,10 @@
     <!-- GALLERY SECTION -->
     <section id="gallery" class="section-padding section-gallery-tone">
         <div class="container">
-                <div class="text-center" style="margin-bottom: 50px;">
+                <div class="text-center section-heading">
                     <div class="subtitle">OUR WORK</div>
                     <h2>Haircut Gallery</h2>
-                <button onclick="toggleGallery()" class="btn-ghost" id="gallery-btn" style="margin-top: 20px;" aria-controls="gallery-grid">Show More</button>
+                <button onclick="toggleGallery()" class="btn-ghost gallery-top-toggle" id="gallery-btn" aria-controls="gallery-grid">Show More</button>
             </div>
 
             <div class="gallery-grid" id="gallery-grid">
@@ -378,8 +378,8 @@
 
     <!-- PRICING MENU -->
     <section id="pricing" class="section-padding section-pricing-tone">
-        <div class="container" style="max-width: 800px;">
-            <div class="text-center" style="margin-bottom: 50px;">
+        <div class="container container-narrow">
+            <div class="text-center section-heading">
                 <div class="subtitle">A LA CARTE</div>
                 <h2>Service Menu</h2>
             </div>
@@ -681,31 +681,63 @@
         <div class="info-side">
             <div class="subtitle">FIND US</div>
             <h2>The Location</h2>
-            <div style="margin-bottom: 40px;">
-                <h4 class="text-gold" style="margin-bottom: 10px;">HQ</h4>
+            <div class="contact-block">
+                <h4 class="text-gold contact-subheading">HQ</h4>
                 <p class="text-muted">200 Leadwell Lane<br>Robin Hood, Wakefield<br>WF3 3AE</p>
-                <p class="text-muted" style="margin-top: 10px;">07538 740289</p>
+                <p class="text-muted u-mt-10">07538 740289</p>
             </div>
-            <div style="margin-bottom: 40px;">
-                <h4 class="text-gold" style="margin-bottom: 10px;">Hours</h4>
+            <div class="contact-block">
+                <h4 class="text-gold contact-subheading">Hours</h4>
                 <div class="open-status open-status--compact" id="openStatusContact" aria-live="polite"></div>
-                <div class="hours-grid" style="display: grid; grid-template-columns: 1fr 1fr; color: var(--text-muted); gap: 10px;">
+                <div class="hours-grid">
                     <div>Mon - Wed</div><div>09:00 - 18:00</div>
                     <div>Thu - Fri</div><div>09:00 - 19:00</div>
                     <div>Sat</div><div>08:00 - 16:00</div>
                     <div>Sun</div><div>Closed</div>
                 </div>
             </div>
+            <div class="contact-block contact-form-block">
+                <h4 class="text-gold contact-subheading">Message Us</h4>
+                <form class="contact-form" id="contactForm">
+                    <div class="contact-form-grid">
+                        <label for="contactName">Name</label>
+                        <input id="contactName" name="name" type="text" required>
+                        <label for="contactEmail">Email</label>
+                        <input id="contactEmail" name="email" type="email" required>
+                        <label for="contactMessage">Message</label>
+                        <textarea id="contactMessage" name="message" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary contact-submit">Send Message</button>
+                </form>
+            </div>
         </div>
         <div class="map-side">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2359.335782461679!2d-1.5125892874992952!3d53.74788997231064!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48796778c8c4f4cd%3A0x1d3c9182b8c5b7a1!2s200%20Leadwell%20Ln%2C%20Robin%20Hood%2C%20Wakefield%20WF3%203AA!5e0!3m2!1sen!2suk!4v1700000000000" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2359.335782461679!2d-1.5125892874992952!3d53.74788997231064!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48796778c8c4f4cd%3A0x1d3c9182b8c5b7a1!2s200%20Leadwell%20Ln%2C%20Robin%20Hood%2C%20Wakefield%20WF3%203AA!5e0!3m2!1sen!2suk!4v1700000000000" class="map-embed" allowfullscreen="" loading="lazy"></iframe>
         </div>
     </section>
 
     <!-- FOOTER -->
     <footer>
         <div class="container">
-            <p>© 2025 Band of Men Barber Salon. All rights reserved.</p>
+            <p>© 2026 Band of Men Barber Salon. All rights reserved.</p>
+            <p class="footer-social-links">
+                <a href="https://www.instagram.com/bandofmenbarbers" target="_blank" rel="noopener noreferrer" aria-label="Band of Men on Instagram">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <rect x="3.5" y="3.5" width="17" height="17" rx="5"></rect>
+                        <circle cx="12" cy="12" r="4"></circle>
+                        <circle cx="17.5" cy="6.5" r="1"></circle>
+                    </svg>
+                    <span>bandofmenbarbers</span>
+                </a>
+                <span class="footer-social-separator" aria-hidden="true">·</span>
+                <a href="https://www.youtube.com/@bandofmenbarbers" target="_blank" rel="noopener noreferrer" aria-label="Band of Men on YouTube">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <rect x="2.5" y="6.5" width="19" height="11" rx="3.5"></rect>
+                        <polygon points="10,9 16,12 10,15"></polygon>
+                    </svg>
+                    <span>bandofmenbarbers</span>
+                </a>
+            </p>
         </div>
     </footer>
 
@@ -740,6 +772,8 @@
     <script src="js/gallery.js"></script>
     <script src="js/tabs.js"></script>
     <script src="js/open-status.js"></script>
+    <script src="js/contact-mailto.js"></script>
+    <script src="js/sw-register.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

@@ -339,8 +339,13 @@ header.scrolled {
     left: 0; 
     width: 100%; 
     height: 100%;
-    background: linear-gradient(to right, rgba(8,15,13,0.9), rgba(8,15,13,0.5)), 
+    background: linear-gradient(to right, rgba(8,15,13,0.9), rgba(8,15,13,0.5)),
                 url('../Photos/Branding/inside photo.jpeg');
+    background: linear-gradient(to right, rgba(8,15,13,0.9), rgba(8,15,13,0.5)),
+                image-set(
+                    url('../Photos/Branding/inside photo.webp') type('image/webp'),
+                    url('../Photos/Branding/inside photo.jpeg') type('image/jpeg')
+                );
     background-size: cover;
     background-position: center;
     z-index: -1;
@@ -398,6 +403,10 @@ header.scrolled {
     position: absolute;
     inset: 0;
     background-image: url('../Photos/Branding/hero-forest.jpg');
+    background-image: image-set(
+        url('../Photos/Branding/hero-forest.webp') type('image/webp'),
+        url('../Photos/Branding/hero-forest.jpg') type('image/jpeg')
+    );
     background-size: cover;
     background-position: center;
     opacity: 0.05;
@@ -421,6 +430,16 @@ header.scrolled {
     grid-template-columns: 5fr 1fr 6fr;
     gap: 20px;
     align-items: center;
+}
+
+.about-stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.stat-note {
+    font-size: 0.85rem;
 }
 
 .intro-img {
@@ -618,7 +637,73 @@ header.scrolled {
 }
 
 .hours-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    color: var(--text-muted);
     max-width: 300px;
+}
+
+.contact-block {
+    margin-bottom: 40px;
+}
+
+.contact-subheading {
+    margin-bottom: 10px;
+}
+
+.contact-form-block {
+    margin-bottom: 0;
+}
+
+.contact-form {
+    width: 100%;
+    max-width: 380px;
+}
+
+.contact-form-grid {
+    display: grid;
+    gap: 10px;
+}
+
+.contact-form-grid label {
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+}
+
+.contact-form-grid input,
+.contact-form-grid textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--text-main);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+}
+
+.contact-form-grid input:focus,
+.contact-form-grid textarea:focus {
+    outline: none;
+    border-color: var(--accent-gold);
+}
+
+.contact-form-grid textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.contact-submit {
+    margin-top: 14px;
+    padding: 13px 20px;
+    width: auto;
+}
+
+.map-embed {
+    border: 0;
 }
 
 /* --- Footer --- */
@@ -628,4 +713,51 @@ footer {
     text-align: center; 
     font-size: 0.8rem; 
     color: #555; 
+}
+
+footer p + p {
+    margin-top: 10px;
+}
+
+.footer-social-links {
+    color: #6b726f;
+    letter-spacing: 0.06em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.footer-social-links a {
+    color: #8ca39d;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: color 0.25s ease, border-color 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    line-height: 1;
+}
+
+.footer-social-links a svg {
+    width: 14px;
+    height: 14px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+}
+
+.footer-social-links a svg polygon {
+    fill: currentColor;
+    stroke: none;
+}
+
+.footer-social-separator {
+    color: #5d6462;
+}
+
+.footer-social-links a:hover {
+    color: var(--accent-gold);
+    border-bottom-color: rgba(197, 160, 89, 0.65);
 }

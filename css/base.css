@@ -125,6 +125,23 @@ h2 {
 .text-muted { color: var(--text-muted); }
 .text-center { text-align: center; }
 .section-padding { padding: var(--spacing-section) 0; }
+.section-heading { margin-bottom: 50px; }
+.container-narrow { max-width: 800px; }
+.u-mb-20 { margin-bottom: 20px; }
+.u-mt-10 { margin-top: 10px; }
+.is-hidden { display: none !important; }
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
 
 /* Anchor scroll offset for fixed header (single rule across devices). */
 section[id] {
