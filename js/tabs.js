@@ -212,11 +212,13 @@ const Tabs = {
         }
 
         requestAnimationFrame(() => {
+            // Only apply anti-jump anchoring on mobile when the browser has moved us far away.
             if (this.isMobile() && menuSelector) {
-                const top = menuSelector.getBoundingClientRect().top + window.pageYOffset - headerHeight - 8;
-                window.scrollTo(0, Math.max(0, top));
-            } else {
-                window.scrollTo(0, scrollY);
+                const current = window.scrollY;
+                if (Math.abs(current - scrollY) > 220) {
+                    const top = menuSelector.getBoundingClientRect().top + window.pageYOffset - headerHeight - 8;
+                    window.scrollTo(0, Math.max(0, top));
+                }
             }
         });
     }
