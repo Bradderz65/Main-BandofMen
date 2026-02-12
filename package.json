@@ -4,7 +4,8 @@
   "description": "Band of Men Barber Salon Website",
   "type": "module",
   "scripts": {
-    "dev": "netlify dev"
+    "dev": "netlify dev",
+    "sync:preview": "bash scripts/sync-preview.sh"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
