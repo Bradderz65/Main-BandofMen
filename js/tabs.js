@@ -17,15 +17,12 @@ const Tabs = {
 
         this.applyStableHeight();
         window.addEventListener('resize', () => this.applyStableHeight(), { passive: true });
+        window.addEventListener('load', () => this.applyStableHeight(), { once: true });
+        setTimeout(() => this.applyStableHeight(), 250);
     },
 
     applyStableHeight() {
-        // Desktop only: lock all tabs to the tallest one to avoid background/section jumping
-        if (window.innerWidth < 901) {
-            document.documentElement.style.removeProperty('--menu-content-max-height');
-            return;
-        }
-
+        // Lock all tabs to the tallest one to avoid background/section jumping
         const contents = Array.from(document.querySelectorAll('.menu-content'));
         if (contents.length === 0) return;
 
