@@ -398,8 +398,9 @@ header.scrolled {
     position: absolute;
     inset: 0;
     background-image: url('../Photos/Branding/hero-forest.jpg');
-    background-size: cover;
-    background-position: center;
+    background-size: 100% auto; /* keep scale stable when tab content height changes */
+    background-position: center top;
+    background-repeat: no-repeat;
     opacity: 0.05;
     filter: grayscale(30%) contrast(1) saturate(55%);
     pointer-events: none;
