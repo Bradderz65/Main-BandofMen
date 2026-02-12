@@ -1,7 +1,7 @@
 /* ============================================
    BAND OF MEN - Tabs
    ============================================
-   Service menu tab switching
+   Service menu tab switching + mobile accordions
    ============================================ */
 
 const Tabs = {
@@ -15,10 +15,105 @@ const Tabs = {
             if (firstButton) firstButton.classList.add('active');
         }
 
+        this.buildMobileAccordions();
+
         this.applyStableHeight();
-        window.addEventListener('resize', () => this.applyStableHeight(), { passive: true });
+        window.addEventListener('resize', () => {
+            this.applyStableHeight();
+            this.refreshAccordionMode();
+        }, { passive: true });
         window.addEventListener('load', () => this.applyStableHeight(), { once: true });
         setTimeout(() => this.applyStableHeight(), 250);
+    },
+
+    isMobile() {
+        return window.innerWidth <= 900;
+    },
+
+    buildMobileAccordions() {
+        const tabs = Array.from(document.querySelectorAll('.menu-content'));
+
+        tabs.forEach((tab) => {
+            if (tab.dataset.accordionBuilt === 'true') return;
+
+            const headers = Array.from(tab.querySelectorAll('.cat-header'));
+            headers.forEach((header, index) => {
+                const section = document.createElement('div');
+                section.className = 'menu-accordion-section';
+
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'cat-header cat-header-btn';
+                button.setAttribute('aria-expanded', index === 0 ? 'true' : 'false');
+                button.innerHTML = `<span>${header.textContent.trim()}</span><span class="cat-header-chevron" aria-hidden="true">⌄</span>`;
+
+                const panel = document.createElement('div');
+                panel.className = 'menu-accordion-panel';
+                panel.hidden = index !== 0;
+
+                header.parentNode.insertBefore(section, header);
+                section.appendChild(button);
+                section.appendChild(panel);
+                header.remove();
+
+                let next = section.nextSibling;
+                while (next && !(next.classList && next.classList.contains('cat-header'))) {
+                    const current = next;
+                    next = next.nextSibling;
+                    if (current.nodeType === 1 && current.classList.contains('pricing-row')) {
+                        panel.appendChild(current);
+                    }
+                }
+
+                button.addEventListener('click', () => {
+                    if (!this.isMobile()) return;
+
+                    const currentlyOpen = button.getAttribute('aria-expanded') === 'true';
+                    const siblingSections = Array.from(tab.querySelectorAll('.menu-accordion-section'));
+
+                    siblingSections.forEach((sec) => {
+                        const btn = sec.querySelector('.cat-header-btn');
+                        const pnl = sec.querySelector('.menu-accordion-panel');
+                        btn.setAttribute('aria-expanded', 'false');
+                        pnl.hidden = true;
+                    });
+
+                    if (!currentlyOpen) {
+                        button.setAttribute('aria-expanded', 'true');
+                        panel.hidden = false;
+                    }
+
+                    this.applyStableHeight();
+                });
+            });
+
+            tab.dataset.accordionBuilt = 'true';
+        });
+
+        this.refreshAccordionMode();
+    },
+
+    refreshAccordionMode() {
+        const mobile = this.isMobile();
+        const tabs = Array.from(document.querySelectorAll('.menu-content'));
+
+        tabs.forEach((tab) => {
+            const sections = Array.from(tab.querySelectorAll('.menu-accordion-section'));
+            sections.forEach((section, index) => {
+                const button = section.querySelector('.cat-header-btn');
+                const panel = section.querySelector('.menu-accordion-panel');
+                if (!button || !panel) return;
+
+                if (mobile) {
+                    const shouldOpen = index === 0;
+                    button.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+                    panel.hidden = !shouldOpen;
+                } else {
+                    button.setAttribute('aria-expanded', 'true');
+                    panel.hidden = false;
+                }
+            });
+        });
     },
 
     applyStableHeight() {
@@ -78,6 +173,20 @@ const Tabs = {
         if (evt && evt.currentTarget) {
             evt.currentTarget.classList.add('active');
         }
+
+        // On mobile, keep only first category open for shorter scrolling
+        if (this.isMobile() && targetTab) {
+            const sections = Array.from(targetTab.querySelectorAll('.menu-accordion-section'));
+            sections.forEach((section, index) => {
+                const btn = section.querySelector('.cat-header-btn');
+                const pnl = section.querySelector('.menu-accordion-panel');
+                const shouldOpen = index === 0;
+                if (btn) btn.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+                if (pnl) pnl.hidden = !shouldOpen;
+            });
+        }
+
+        this.applyStableHeight();
     }
 };
 

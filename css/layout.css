@@ -539,6 +539,36 @@ header.scrolled {
     padding-bottom: 10px;
 }
 
+.cat-header-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: transparent;
+    border: 0;
+    text-align: left;
+    cursor: pointer;
+}
+
+.cat-header-chevron {
+    display: none;
+    font-size: 1.1rem;
+    line-height: 1;
+    transition: transform 0.25s ease;
+}
+
+.cat-header-btn[aria-expanded="true"] .cat-header-chevron {
+    transform: rotate(180deg);
+}
+
+.menu-accordion-panel {
+    display: block;
+}
+
+.menu-accordion-panel[hidden] {
+    display: none !important;
+}
+
 .pricing-row {
     display: flex; 
     justify-content: space-between; 
@@ -586,6 +616,12 @@ header.scrolled {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         column-gap: 60px;
+    }
+
+    /* Flatten accordion wrappers on desktop to preserve original 2-column flow */
+    .menu-content .menu-accordion-section,
+    .menu-content .menu-accordion-panel {
+        display: contents;
     }
 
     .menu-content.active .cat-header {
