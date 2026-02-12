@@ -17,10 +17,17 @@ const Tabs = {
 
         this.buildMobileAccordions();
 
+        this._lastMobileMode = this.isMobile();
         this.applyStableHeight();
         window.addEventListener('resize', () => {
+            const nowMobile = this.isMobile();
+            // Mobile browser chrome can fire many resize events while scrolling.
+            // Only reconfigure accordion mode when crossing the breakpoint.
+            if (nowMobile !== this._lastMobileMode) {
+                this.refreshAccordionMode();
+                this._lastMobileMode = nowMobile;
+            }
             this.applyStableHeight();
-            this.refreshAccordionMode();
         }, { passive: true });
         window.addEventListener('load', () => this.applyStableHeight(), { once: true });
         setTimeout(() => this.applyStableHeight(), 250);
@@ -117,7 +124,13 @@ const Tabs = {
     },
 
     applyStableHeight() {
-        // Lock all tabs to the tallest one to avoid background/section jumping
+        // Keep mobile natural to avoid scroll-jump behavior from dynamic browser UI resize events.
+        if (this.isMobile()) {
+            document.documentElement.style.removeProperty('--menu-content-max-height');
+            return;
+        }
+
+        // Desktop: lock tabs to tallest one to avoid background/section jumping
         const contents = Array.from(document.querySelectorAll('.menu-content'));
         if (contents.length === 0) return;
 
