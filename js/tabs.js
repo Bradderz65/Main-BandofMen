@@ -153,6 +153,8 @@ const Tabs = {
     openTab(evt, tabName) {
         if (evt && typeof evt.preventDefault === 'function') evt.preventDefault();
         const scrollY = window.scrollY;
+        const menuSelector = document.querySelector('.menu-selector');
+        const headerHeight = document.querySelector('header')?.offsetHeight || 70;
 
         // Hide all tab contents
         const contents = document.getElementsByClassName('menu-content');
@@ -195,7 +197,15 @@ const Tabs = {
         if (evt && evt.currentTarget && typeof evt.currentTarget.blur === 'function') {
             evt.currentTarget.blur();
         }
-        requestAnimationFrame(() => window.scrollTo(0, scrollY));
+
+        requestAnimationFrame(() => {
+            if (this.isMobile() && menuSelector) {
+                const top = menuSelector.getBoundingClientRect().top + window.pageYOffset - headerHeight - 8;
+                window.scrollTo(0, Math.max(0, top));
+            } else {
+                window.scrollTo(0, scrollY);
+            }
+        });
     }
 };
 
