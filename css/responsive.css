@@ -138,6 +138,11 @@
     .menu-accordion-panel .pricing-row {
         padding: 14px 0;
     }
+
+    /* On mobile, avoid reserved blank space under shorter accordion states */
+    .menu-content {
+        min-height: auto !important;
+    }
     
     /* Gallery */
     .gallery-grid {
