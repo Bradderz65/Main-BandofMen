@@ -17,28 +17,33 @@ const Tabs = {
     },
 
     openTab(evt, tabName) {
+        const scrollY = window.scrollY;
+
         // Hide all tab contents
         const contents = document.getElementsByClassName('menu-content');
         for (let i = 0; i < contents.length; i++) {
             contents[i].classList.remove('active');
         }
-        
+
         // Remove active class from all buttons
         const buttons = document.getElementsByClassName('selector-btn');
         for (let i = 0; i < buttons.length; i++) {
             buttons[i].classList.remove('active');
         }
-        
+
         // Show the specific tab content
         const targetTab = document.getElementById(tabName);
         if (targetTab) {
             targetTab.classList.add('active');
         }
-        
+
         // Add active class to the clicked button
         if (evt && evt.currentTarget) {
             evt.currentTarget.classList.add('active');
         }
+
+        // Restore scroll so the page doesn't jump
+        window.scrollTo(0, scrollY);
     }
 };
 

@@ -25,12 +25,12 @@ const Gallery = {
         this.grid = document.getElementById('gallery-grid');
         this.buttonTop = document.getElementById('gallery-btn');
         this.buttonBottom = document.getElementById('gallery-btn-bottom');
-        
+
         // Show first 4 items initially
         this.showInitialItems();
         this.prepareDeferredImages();
         this.syncButtons();
-        
+
         // Initialize lightbox
         this.initLightbox();
     },
@@ -47,21 +47,20 @@ const Gallery = {
             <button class="lightbox-next" aria-label="Next">&#10095;</button>
         `;
         document.body.appendChild(lightbox);
-        
+
         // Add click handlers to gallery images
         const items = document.querySelectorAll('.gallery-item img');
         items.forEach((img, index) => {
-            img.style.cursor = 'pointer';
             img.decoding = 'async';
             img.addEventListener('click', () => this.openLightbox(index));
         });
-        
+
         // Close handlers
         lightbox.querySelector('.lightbox-close').addEventListener('click', () => this.closeLightbox());
         lightbox.addEventListener('click', (e) => {
             if (e.target === lightbox) this.closeLightbox();
         });
-        
+
         // Keyboard navigation
         document.addEventListener('keydown', (e) => {
             if (!lightbox.classList.contains('active')) return;
@@ -69,11 +68,11 @@ const Gallery = {
             if (e.key === 'ArrowLeft') this.prevImage();
             if (e.key === 'ArrowRight') this.nextImage();
         });
-        
+
         // Prev/Next buttons
         lightbox.querySelector('.lightbox-prev').addEventListener('click', () => this.prevImage());
         lightbox.querySelector('.lightbox-next').addEventListener('click', () => this.nextImage());
-        
+
         // Touch/Swipe support for mobile
         this.initSwipeHandlers(lightbox);
     },
@@ -82,25 +81,25 @@ const Gallery = {
         let touchStartX = 0;
         let touchEndX = 0;
         const minSwipeDistance = 50;
-        
+
         const img = lightbox.querySelector('.lightbox-img');
-        
+
         img.addEventListener('touchstart', (e) => {
             touchStartX = e.changedTouches[0].screenX;
         }, { passive: true });
-        
+
         img.addEventListener('touchend', (e) => {
             touchEndX = e.changedTouches[0].screenX;
             this.handleSwipe(touchStartX, touchEndX, minSwipeDistance);
         }, { passive: true });
-        
+
         // Also allow swiping on the entire lightbox background
         lightbox.addEventListener('touchstart', (e) => {
             if (e.target === lightbox) {
                 touchStartX = e.changedTouches[0].screenX;
             }
         }, { passive: true });
-        
+
         lightbox.addEventListener('touchend', (e) => {
             if (e.target === lightbox) {
                 touchEndX = e.changedTouches[0].screenX;
@@ -111,7 +110,7 @@ const Gallery = {
 
     handleSwipe(startX, endX, minDistance) {
         const swipeDistance = endX - startX;
-        
+
         if (Math.abs(swipeDistance) > minDistance) {
             if (swipeDistance > 0) {
                 // Swiped right - go to previous
@@ -129,7 +128,7 @@ const Gallery = {
         const lightbox = document.getElementById('lightbox');
         const img = lightbox.querySelector('.lightbox-img');
         const items = document.querySelectorAll('.gallery-item img');
-        
+
         img.src = items[index].src;
         img.alt = items[index].alt;
         lightbox.classList.add('active');
@@ -191,7 +190,7 @@ const Gallery = {
 
     showInitialItems() {
         if (!this.grid) return;
-        
+
         const items = this.grid.querySelectorAll('.gallery-item:nth-child(-n+4)');
         items.forEach(item => {
             item.classList.add('visible');
@@ -240,7 +239,7 @@ const Gallery = {
         } else {
             this.expand();
         }
-        
+
         this.isExpanded = !this.isExpanded;
     },
 
@@ -249,7 +248,7 @@ const Gallery = {
         this.loadDeferredImages();
         this.grid.classList.add('expanded');
         this.setButtonText('Show Less');
-        
+
         // Show items 5+ with staggered animation
         const items = this.grid.querySelectorAll('.gallery-item:nth-child(n+5)');
         items.forEach((item, index) => {
@@ -267,14 +266,14 @@ const Gallery = {
 
         this.grid.classList.remove('expanded');
         this.setButtonText('Show More');
-        
+
         // Animate out items 5+
         const items = this.grid.querySelectorAll('.gallery-item:nth-child(n+5)');
         items.forEach(item => {
             item.classList.remove('visible');
             item.style.transitionDelay = '0s';
         });
-        
+
         // Hide after animation
         setTimeout(() => {
             items.forEach(item => {

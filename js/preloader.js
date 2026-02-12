@@ -7,7 +7,7 @@
 const Preloader = {
     // Critical images that must load before site reveals
     criticalImages: [
-        'Photos/Branding/logo.png',
+        'roundlogo.png',
         'Photos/Branding/inside photo.jpeg',
         'Photos/Branding/exterior.jpeg',
         'Photos/Haircuts/haircut-1.jpeg',
@@ -24,11 +24,11 @@ const Preloader = {
         this.preloader = document.getElementById('preloader');
         this.loaderBar = document.getElementById('loaderBar');
         this.loaderText = document.getElementById('loaderText');
-        
+
         if (this.preloader) {
             this.startPreloading();
         }
-        
+
         this.setupLazyLoading();
     },
 
@@ -62,18 +62,18 @@ const Preloader = {
     async startPreloading() {
         const startTime = Date.now();
         const minimumLoadTime = 800; // Minimum 800ms to show preloader
-        
+
         try {
             // Preload all critical images
             await Promise.all(this.criticalImages.map(src => this.preloadImage(src)));
-            
+
             // Calculate remaining time to meet minimum load time
             const elapsed = Date.now() - startTime;
             const remainingTime = Math.max(0, minimumLoadTime - elapsed);
-            
+
             // Wait for remaining time if needed
             await new Promise(resolve => setTimeout(resolve, remainingTime));
-            
+
             // Complete animation
             setTimeout(() => {
                 if (this.loaderText) {
@@ -82,14 +82,14 @@ const Preloader = {
                 if (this.loaderBar) {
                     this.loaderBar.style.width = '100%';
                 }
-                
+
                 // Hide preloader
                 setTimeout(() => {
                     if (this.preloader) {
                         this.preloader.classList.add('hidden');
                     }
                     document.body.classList.remove('preloading');
-                    
+
                     // Remove preloader from DOM
                     setTimeout(() => {
                         if (this.preloader) {
@@ -110,13 +110,13 @@ const Preloader = {
     setupLazyLoading() {
         document.addEventListener('DOMContentLoaded', () => {
             const lazyImages = document.querySelectorAll('img[loading="lazy"]');
-            
+
             if ('IntersectionObserver' in window) {
                 const imageObserver = new IntersectionObserver((entries, observer) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
                             const img = entry.target;
-                            
+
                             if (img.complete) {
                                 img.classList.add('loaded');
                             } else {
@@ -130,7 +130,7 @@ const Preloader = {
                 }, {
                     rootMargin: '50px'
                 });
-                
+
                 lazyImages.forEach(img => imageObserver.observe(img));
             } else {
                 // Fallback
@@ -144,7 +144,7 @@ const Preloader = {
                     }
                 });
             }
-            
+
             // Handle eager loaded images
             const eagerImages = document.querySelectorAll('img[loading="eager"]');
             eagerImages.forEach(img => {
