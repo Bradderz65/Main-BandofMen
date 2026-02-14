@@ -8,5 +8,30 @@
 [[headers]]
   for = "/*"
   [headers.values]
+    # Enforce HTTPS
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+
+    # Baseline security headers
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+
+    # Reduce risk of overly-permissive CORS (avoid wildcard)
+    # If you don't need CORS at all, consider removing this and ensuring nothing upstream injects it.
+    Access-Control-Allow-Origin = "https://bandofmen.uk"
+    Vary = "Origin"
+
+    # CSP: start reasonably strict but compatible with typical static sites.
+    # If anything breaks (fonts/analytics/3rd-party embeds), we can tune directives.
+    Content-Security-Policy = "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; img-src 'self' data: https:; font-src 'self' data: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' https:; connect-src 'self' https:"
+
+[[redirects]]
+  from = "/package.json"
+  to = "/404.html"
+  status = 404
+
+[[redirects]]
+  from = "/package-lock.json"
+  to = "/404.html"
+  status = 404
