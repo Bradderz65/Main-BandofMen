@@ -1,0 +1,49 @@
+/* ============================================
+   BAND OF MEN - CSS Variables
+   ============================================
+   Central location for all design tokens
+   ============================================ */
+
+:root {
+    /* Color Palette: Deep Forest & Burnished Copper */
+    --bg-deep: #060b09;          /* Near-black forest */
+    --bg-panel: #0d1a17;         /* Deep Sherwood Green */
+    --bg-elevated: #132723;      /* Elevated panel shade */
+    --bg-card: rgba(16, 32, 27, 0.65);  /* Glassmorphism card */
+    --accent-gold: #c5a059;      /* Burnished Copper/Gold */
+    --accent-gold-rgb: 197, 160, 89;
+    --accent-warm: #d4a84b;      /* Warmer gold for highlights */
+    --accent-light: #e6d5b8;     /* Pale Champagne */
+    --accent-rose: #c97;         /* Warm copper rose accent */
+    --text-main: #dce5e1;        /* Off-white with cool tint */
+    --text-muted: #7a9990;       /* Muted sage */
+    --text-light: #b8ccc5;       /* Light text for overlays */
+    --border-subtle: rgba(197, 160, 89, 0.12);
+    --border-strong: rgba(197, 160, 89, 0.35);
+
+    /* Typography — Distinctive, not generic */
+    --font-heading: 'Playfair Display', 'Georgia', serif;
+    --font-body: 'DM Sans', 'Helvetica Neue', sans-serif;
+
+    /* Animation */
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Shadows */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.4);
+    --shadow-gold: 0 4px 20px rgba(197, 160, 89, 0.15);
+
+    /* Spacing */
+    --spacing-section: 110px;
+    --header-height: 70px;
+    --page-top-gap: clamp(24px, 5vw, 64px);
+    --page-bottom-gap: clamp(24px, 4vw, 56px);
+
+    /* Border Radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 16px;
+    --radius-pill: 999px;
+}
