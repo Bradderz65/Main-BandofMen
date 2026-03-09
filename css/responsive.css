@@ -232,7 +232,7 @@
         max-height: min(72dvh, calc(100dvh - var(--header-height-dyn, var(--header-height)) - env(safe-area-inset-top) - 14px));
         padding: 22px 20px 16px;
         gap: 10px;
-        overflow-y: hidden;
+        overflow-y: auto;
     }
 
     .mobile-nav-links a.menu-link {

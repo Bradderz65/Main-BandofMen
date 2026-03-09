@@ -97,7 +97,7 @@
                     </div>
                 </div>
                 -->
-                <a href="https://booksy.com/en-gb/122744_band-of-men-barber-salon_barber_1485625_robin-hood" target="_blank" class="btn-primary desktop-btn">Book Seat</a>
+                <a href="https://booksy.com/en-gb/122744_band-of-men-barber-salon_barber_1485625_robin-hood" target="_blank" rel="noopener noreferrer" class="btn-primary desktop-btn">Book Seat</a>
             </div>
 
             <!-- Mobile Hamburger Icon -->
@@ -120,7 +120,7 @@
             
             <!-- Mobile Action Buttons -->
             <div class="mobile-menu-actions">
-                <a href="https://booksy.com/en-gb/122744_band-of-men-barber-salon_barber_1485625_robin-hood" target="_blank" class="btn-primary mobile-menu-btn">Book Now</a>
+                <a href="https://booksy.com/en-gb/122744_band-of-men-barber-salon_barber_1485625_robin-hood" target="_blank" rel="noopener noreferrer" class="btn-primary mobile-menu-btn">Book Now</a>
                 <!-- <button class="mobile-auth-btn" id="mobileAuthBtn" onclick="closeMenu(); openAuthModal('login');">Login</button> -->
             </div>
         </div>
@@ -136,7 +136,7 @@
                 <h1>Refined.<br>Rugged.<br>Rare.</h1>
                 <p>A sanctuary for the modern man. Blending the heritage of traditional barbering with the precision of contemporary style.</p>
                 <div class="hero-btns">
-                    <a href="https://booksy.com/en-gb/122744_band-of-men-barber-salon_barber_1485625_robin-hood" target="_blank" class="btn-primary">Book Appointment</a>
+                    <a href="https://booksy.com/en-gb/122744_band-of-men-barber-salon_barber_1485625_robin-hood" target="_blank" rel="noopener noreferrer" class="btn-primary">Book Appointment</a>
                     <a href="#pricing" class="btn-ghost">View Menu</a>
                 </div>
             </div>
@@ -388,14 +388,14 @@
             </div>
 
             <!-- STYLED AREA SELECTOR -->
-            <div class="menu-selector">
-                <button class="selector-btn active" onclick="openTab(event, 'hair')">Hair & Beard</button>
-                <button class="selector-btn" onclick="openTab(event, 'wax')">Face & Body Wax</button>
-                <button class="selector-btn" onclick="openTab(event, 'intimate')">Intimate & Packs</button>
+            <div class="menu-selector" role="tablist" aria-label="Service categories">
+                <button class="selector-btn active" role="tab" aria-selected="true" aria-controls="hair" id="tab-hair" onclick="openTab(event, 'hair')">Hair & Beard</button>
+                <button class="selector-btn" role="tab" aria-selected="false" aria-controls="wax" id="tab-wax" onclick="openTab(event, 'wax')">Face & Body Wax</button>
+                <button class="selector-btn" role="tab" aria-selected="false" aria-controls="intimate" id="tab-intimate" onclick="openTab(event, 'intimate')">Intimate & Packs</button>
             </div>
 
             <!-- TAB 1: HAIR & BEARD -->
-            <div id="hair" class="menu-content active">
+            <div id="hair" class="menu-content active" role="tabpanel" aria-labelledby="tab-hair">
                 <div class="cat-header">Barbering Services</div>
                 <div class="pricing-row">
                     <div>
@@ -484,7 +484,7 @@
             </div>
 
             <!-- TAB 2: FACE & BODY WAX -->
-            <div id="wax" class="menu-content">
+            <div id="wax" class="menu-content" role="tabpanel" aria-labelledby="tab-wax" hidden>
                 <div class="cat-header">Men's Facial Waxing</div>
                 <div class="pricing-row">
                     <div>
@@ -607,7 +607,7 @@
             </div>
 
             <!-- TAB 3: INTIMATE -->
-            <div id="intimate" class="menu-content">
+            <div id="intimate" class="menu-content" role="tabpanel" aria-labelledby="tab-intimate" hidden>
                 <div class="cat-header">Men's Intimate Waxing</div>
                 <div class="pricing-row">
                     <div>

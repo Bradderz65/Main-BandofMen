@@ -11,8 +11,14 @@ const Tabs = {
         if (!activeContent) {
             const firstContent = document.querySelector('.menu-content');
             const firstButton = document.querySelector('.selector-btn');
-            if (firstContent) firstContent.classList.add('active');
-            if (firstButton) firstButton.classList.add('active');
+            if (firstContent) {
+                firstContent.classList.add('active');
+                firstContent.hidden = false;
+            }
+            if (firstButton) {
+                firstButton.classList.add('active');
+                firstButton.setAttribute('aria-selected', 'true');
+            }
         }
 
         this.buildMobileAccordions();
@@ -173,23 +179,27 @@ const Tabs = {
         const contents = document.getElementsByClassName('menu-content');
         for (let i = 0; i < contents.length; i++) {
             contents[i].classList.remove('active');
+            contents[i].hidden = true;
         }
 
         // Remove active class from all buttons
         const buttons = document.getElementsByClassName('selector-btn');
         for (let i = 0; i < buttons.length; i++) {
             buttons[i].classList.remove('active');
+            buttons[i].setAttribute('aria-selected', 'false');
         }
 
         // Show the specific tab content
         const targetTab = document.getElementById(tabName);
         if (targetTab) {
             targetTab.classList.add('active');
+            targetTab.hidden = false;
         }
 
         // Add active class to the clicked button
         if (evt && evt.currentTarget) {
             evt.currentTarget.classList.add('active');
+            evt.currentTarget.setAttribute('aria-selected', 'true');
         }
 
         // On mobile, keep only first category open for shorter scrolling

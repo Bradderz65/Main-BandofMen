@@ -62,7 +62,12 @@ self.addEventListener('fetch', (event) => {
 
                     return response;
                 })
-                .catch(() => caches.match('/index.html'));
+                .catch(() => {
+                    if (request.mode === 'navigate') {
+                        return caches.match('/index.html');
+                    }
+                    return Response.error();
+                });
         })
     );
 });
