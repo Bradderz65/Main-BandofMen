@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bom-static-v1';
+const CACHE_NAME = 'bom-static-v2';
 const ASSETS = [
     '/',
     '/index.html',
@@ -46,10 +46,29 @@ self.addEventListener('fetch', (event) => {
     const url = new URL(request.url);
     if (url.pathname.startsWith('/.netlify/functions/')) return;
 
+    // Keep HTML fresh on deploys while still supporting offline fallback.
+    if (request.mode === 'navigate') {
+        event.respondWith(
+            fetch(request)
+                .then((response) => {
+                    if (response && response.status === 200) {
+                        const copy = response.clone();
+                        caches.open(CACHE_NAME).then((cache) => {
+                            cache.put('/index.html', copy);
+                        });
+                    }
+
+                    return response;
+                })
+                .catch(() => caches.match('/index.html'))
+        );
+        return;
+    }
+
+    // For static assets, serve cached content immediately and refresh in the background.
     event.respondWith(
         caches.match(request).then((cached) => {
-            if (cached) return cached;
-            return fetch(request)
+            const networkFetch = fetch(request)
                 .then((response) => {
                     if (!response || response.status !== 200 || response.type === 'opaque') {
                         return response;
@@ -61,13 +80,9 @@ self.addEventListener('fetch', (event) => {
                     });
 
                     return response;
-                })
-                .catch(() => {
-                    if (request.mode === 'navigate') {
-                        return caches.match('/index.html');
-                    }
-                    return Response.error();
                 });
-        })
+
+            return cached || networkFetch;
+        }).catch(() => Response.error())
     );
 });

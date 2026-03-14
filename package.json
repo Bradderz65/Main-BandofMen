@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "netlify dev",
-    "sync:preview": "bash scripts/sync-preview.sh"
+    "sync:preview": "bash scripts/sync-preview.sh",
+    "booksy:services": "node scripts/booksy-services.mjs",
+    "booksy:compare": "node scripts/compare-booksy-services.mjs"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
