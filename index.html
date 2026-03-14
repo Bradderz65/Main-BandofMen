@@ -701,7 +701,8 @@
             </div>
             <div class="contact-block contact-form-block">
                 <h4 class="text-gold contact-subheading">Message Us</h4>
-                <form class="contact-form" id="contactForm">
+                <form class="contact-form" id="contactForm" novalidate>
+                    <input type="text" name="company" autocomplete="off" tabindex="-1" aria-hidden="true" hidden>
                     <div class="contact-form-grid">
                         <label for="contactName">Name</label>
                         <input id="contactName" name="name" type="text" required>
@@ -710,8 +711,9 @@
                         <label for="contactMessage">Message</label>
                         <textarea id="contactMessage" name="message" rows="4" required></textarea>
                     </div>
-                    <button type="submit" class="btn-primary contact-submit">Open Email App</button>
+                    <button type="submit" class="btn-primary contact-submit">Send Message</button>
                 </form>
+                <p class="text-muted u-mt-10" id="contactStatus" aria-live="polite"></p>
                 <p class="text-muted u-mt-10">Or email <a href="mailto:info@bandofmen.co.uk">info@bandofmen.co.uk</a> directly.</p>
             </div>
         </div>

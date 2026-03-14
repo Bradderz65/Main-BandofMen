@@ -83,6 +83,25 @@ Optional:
 
 If `RESEND_API_KEY` is missing, `/.netlify/functions/send-code` will return an error explaining that the provider is not configured.
 
+## 4b) If Website Contact Form Is Not Sending
+
+The website contact form posts to:
+- `/.netlify/functions/contact`
+
+Required:
+- `RESEND_API_KEY`
+
+Optional:
+- `RESEND_FROM` (defaults to `Band of Men <send@bandofmen.uk>`)
+- `CONTACT_TO` (defaults to `info@bandofmen.co.uk`)
+
+Quick test:
+```bash
+curl -sS -X POST "https://bandofmen.uk/.netlify/functions/contact" \
+  -H "content-type: application/json" \
+  --data '{"name":"Test User","email":"test@example.com","message":"Testing the website contact form."}'
+```
+
 ## 5) Netlify CLI: Install/Use Without Global Install
 
 If `netlify` is not installed:
@@ -139,4 +158,3 @@ The HTML cache-busts `js/auth.js` with a query param, for example:
 If you change `js/auth.js`, bump that `v=` value in:
 - `index.html`
 - `account.html`
-
