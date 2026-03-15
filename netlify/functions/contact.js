@@ -136,8 +136,9 @@ export default async (req) => {
                     We have received your message and will get back to you shortly.
                 </p>
                 <p style="margin:0 0 18px;line-height:1.7;color:#e0e6e4;">
-                    If your enquiry is urgent, you can still contact us directly at
-                    <a href="mailto:${escapeHtml(to)}" style="color:#c5a059;text-decoration:none;">${escapeHtml(to)}</a>.
+                    If your enquiry is urgent, you can contact us via the website at
+                    <a href="https://bandofmen.uk#contact" style="color:#c5a059;text-decoration:none;">bandofmen.uk</a>
+                    or reply to this email.
                 </p>
                 <div style="background:rgba(0,0,0,0.22);padding:16px;border-left:3px solid #c5a059;">
                     <p style="margin:0 0 8px;color:#8ca39d;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;">Your message</p>
