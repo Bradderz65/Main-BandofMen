@@ -36,6 +36,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = await response.json().catch(() => ({}));
             if (!response.ok) {
+                // Keep validation-style errors in the page instead of falling back to mailto.
+                if (response.status >= 400 && response.status < 500) {
+                    setStatus(data?.error || 'Please check your details and try again.', true);
+                    return;
+                }
+
                 throw new Error(data?.error || 'Failed to send message.');
             }
 
