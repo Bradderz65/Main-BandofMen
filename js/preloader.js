@@ -8,12 +8,7 @@ const Preloader = {
     // Critical images that must load before site reveals
     criticalImages: [
         'roundlogo.png',
-        'Photos/Branding/inside photo.jpeg',
-        'Photos/Branding/exterior.jpeg',
-        'Photos/Haircuts/haircut-1.jpeg',
-        'Photos/Haircuts/haircut-2.jpeg',
-        'Photos/Haircuts/haircut-3.jpeg',
-        'Photos/Haircuts/haircut-4.jpeg'
+        'Photos/Branding/inside photo.jpeg'
     ],
 
     loadedCount: 0,
