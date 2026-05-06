@@ -1,0 +1,5 @@
+Contact: mailto:security@bandofmen.uk
+Expires: 2026-12-31T23:59:59Z
+Preferred-Languages: en
+Canonical: https://bandofmen.uk/.well-known/security.txt
+Policy: https://bandofmen.uk/security
