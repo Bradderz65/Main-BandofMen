@@ -1,22 +1,21 @@
-const CACHE_NAME = 'bom-static-v2';
+const CACHE_NAME = 'bom-static-v3';
 const ASSETS = [
     '/',
     '/index.html',
-    '/account.html',
     '/css/variables.css',
     '/css/base.css',
     '/css/components.css',
     '/css/layout.css',
     '/css/responsive.css',
-    '/css/account.css',
     '/js/preloader.js',
     '/js/navigation.js',
     '/js/gallery.js',
     '/js/tabs.js',
     '/js/open-status.js',
+    '/js/contact-mailto.js',
     '/js/main.js',
-    '/js/account.js',
     '/js/sw-register.js',
+    '/favicon.ico',
     '/roundlogo.png'
 ];
 

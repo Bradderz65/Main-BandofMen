@@ -3,6 +3,7 @@
 import fs from "node:fs";
 import process from "node:process";
 import { execFileSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 
 const DEFAULT_URL =
   "https://booksy.com/en-gb/122744_band-of-men-barber-salon_barber_1485625_robin-hood";
@@ -101,35 +102,15 @@ function normalizePrice(value) {
 }
 
 function extractBooksyServices(url) {
-  const html = execFileSync("curl", ["-L", "--silent", "--fail", url], {
-    encoding: "utf8",
-  });
-  const blocks =
-    html.match(
-      /<div id="service-\d+"[\s\S]*?<\/button><\/div><\/div>[\s\S]*?<\/div><\/div><\/div>[\s\S]*?<\/div>/g,
-    ) || [];
-  const byId = new Map();
-
-  for (const block of blocks) {
-    const sectionType = extractFirst(/data-ba-cb-section-type="([^"]+)"/, block);
-    if (sectionType === "booksy_automatic") {
-      continue;
-    }
-
-    const service = {
-      id: extractFirst(/id="service-(\d+)"/, block),
-      category: extractFirst(/data-ba-cb-section-title="([^"]+)"/, block),
-      name: extractFirst(/data-testid="service-name"[^>]*>\s*([\s\S]*?)\s*<\/h[34]>/, block),
-      price: extractFirst(/data-testid="service-price"[^>]*>\s*([^<]+)\s*<\/div>/, block),
-      duration: extractFirst(/data-testid="service-duration"[^>]*>\s*([^<]+)\s*<\/span>/, block),
-    };
-
-    if (!byId.has(service.id)) {
-      byId.set(service.id, service);
-    }
-  }
-
-  return [...byId.values()];
+  // Reuse booksy-services.mjs so Booksy HTML changes only need one parser fix.
+  const scriptPath = fileURLToPath(new URL("./booksy-services.mjs", import.meta.url));
+  const json = execFileSync(
+    process.execPath,
+    [scriptPath, "--url", url, "--format", "json"],
+    { encoding: "utf8" },
+  );
+  const payload = JSON.parse(json);
+  return payload.services || [];
 }
 
 function extractLocalServices(localPath) {
