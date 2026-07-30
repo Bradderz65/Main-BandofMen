@@ -37,15 +37,18 @@
   status = 404
 
 # Auth UI is disabled — send legacy account URLs home
+# force=true so the existing account.html file does not shadow this rule
 [[redirects]]
   from = "/account.html"
   to = "/"
   status = 301
+  force = true
 
 [[redirects]]
   from = "/account"
   to = "/"
   status = 301
+  force = true
 
 [[headers]]
   for = "/account.html"
