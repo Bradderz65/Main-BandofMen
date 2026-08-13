@@ -61,6 +61,7 @@ export default async (req) => {
         const body = await req.json().catch(() => null);
         const name = String(body?.name || '').trim();
         const email = String(body?.email || '').trim().toLowerCase();
+        const phone = String(body?.phone || '').trim();
         const message = String(body?.message || '').trim();
         const company = String(body?.company || '').trim(); // honeypot
 
@@ -74,6 +75,10 @@ export default async (req) => {
 
         if (!isValidEmail(email)) {
             return json({ error: 'Please enter a valid email address.' }, 400);
+        }
+
+        if (phone && !/^[0-9+\s().-]{7,20}$/.test(phone)) {
+            return json({ error: 'Please enter a valid phone number.' }, 400);
         }
 
         if (message.length < 10) {
@@ -96,14 +101,16 @@ export default async (req) => {
             text: [
                 `Name: ${name}`,
                 `Email: ${email}`,
+                phone ? `Phone: ${phone}` : null,
                 '',
                 'Message:',
                 message
-            ].join('\n'),
+            ].filter((line) => line !== null).join('\n'),
             html: buildShell(`
                 <p style="margin:0 0 14px;color:#8ca39d;font-size:13px;">New website enquiry</p>
                 <p style="margin:0 0 12px;"><strong>Name:</strong> ${escapeHtml(name)}</p>
                 <p style="margin:0 0 12px;"><strong>Email:</strong> ${escapeHtml(email)}</p>
+                ${phone ? `<p style="margin:0 0 12px;"><strong>Phone:</strong> ${escapeHtml(phone)}</p>` : ''}
                 <p style="margin:0 0 8px;"><strong>Message:</strong></p>
                 <div style="white-space:pre-wrap;background:rgba(0,0,0,0.22);padding:16px;border-left:3px solid #c5a059;">${escapeHtml(message)}</div>
             `)

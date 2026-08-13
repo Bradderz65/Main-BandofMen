@@ -21,7 +21,13 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('img[src$=".jpeg"], img[src$=".jpg"]').forEach((img) => {
             const src = img.getAttribute('src');
             if (!src) return;
-            img.setAttribute('src', src.replace(/\.(jpe?g)$/i, '.webp'));
+            const next = src.replace(/\.(jpe?g)$/i, '.webp');
+            if (next === src) return;
+            img.classList.remove('loaded');
+            img.setAttribute('src', next);
+            const markLoaded = () => img.classList.add('loaded');
+            if (img.complete) markLoaded();
+            else img.addEventListener('load', markLoaded, { once: true });
         });
     }
 
@@ -62,8 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Intro image load handling
-    const introImg = document.querySelector('.intro-img');
-    if (introImg) {
+    document.querySelectorAll('.intro-img').forEach((introImg) => {
         if (introImg.complete) {
             introImg.classList.add('loaded');
         } else {
@@ -71,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 introImg.classList.add('loaded');
             }, { once: true });
         }
-    }
+    });
 
     // Mobile map hover effect on scroll
     const mapSide = document.querySelector('.map-side');

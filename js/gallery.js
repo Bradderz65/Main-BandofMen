@@ -1,17 +1,20 @@
 /* ============================================
    BAND OF MEN - Gallery
    ============================================
-   Gallery expand/collapse functionality
+   Paginated gallery + accessible lightbox
    ============================================ */
 
 const Gallery = {
+    PAGE_SIZE: 12,
     grid: null,
-    buttonTop: null,
-    buttonBottom: null,
-    isExpanded: false,
-    openedAtY: null,
-    openedAtTargetY: null,
-    deferredLoaded: false,
+    button: null,
+    footer: null,
+    items: [],
+    shownCount: 0,
+    currentImageIndex: 0,
+    lastFocus: null,
+    lightbox: null,
+    focusables: [],
 
     getBestSrc(src) {
         if (!src) return src;
@@ -23,283 +26,238 @@ const Gallery = {
 
     init() {
         this.grid = document.getElementById('gallery-grid');
-        this.buttonTop = document.getElementById('gallery-btn');
-        this.buttonBottom = document.getElementById('gallery-btn-bottom');
+        this.button = document.getElementById('gallery-btn');
+        this.footer = document.querySelector('.gallery-footer');
+        this.items = this.grid ? Array.from(this.grid.querySelectorAll('.gallery-item')) : [];
 
-        // Show first 4 items initially
-        this.showInitialItems();
         this.prepareDeferredImages();
-        this.syncButtons();
-
-        // Initialize lightbox
+        this.showUpTo(this.PAGE_SIZE, { animate: true });
         this.initLightbox();
     },
 
+    prepareDeferredImages() {
+        this.items.forEach((item, index) => {
+            const img = item.querySelector('img');
+            if (!img) return;
+            img.decoding = 'async';
+            if (index >= this.PAGE_SIZE && img.getAttribute('src') && !img.dataset.src) {
+                img.dataset.src = img.getAttribute('src');
+                img.removeAttribute('src');
+            }
+        });
+    },
+
+    showUpTo(count, { animate = false } = {}) {
+        const next = Math.min(count, this.items.length);
+        this.items.forEach((item, index) => {
+            if (index < next) {
+                this.ensureImageLoaded(index);
+                item.classList.add('is-shown');
+                if (animate && index >= this.shownCount) {
+                    item.style.transitionDelay = `${(index - this.shownCount) * 0.04}s`;
+                    requestAnimationFrame(() => item.classList.add('visible'));
+                } else {
+                    item.classList.add('visible');
+                }
+            } else {
+                item.classList.remove('is-shown', 'visible');
+                item.style.transitionDelay = '0s';
+            }
+        });
+        this.shownCount = next;
+        this.syncButton();
+    },
+
+    ensureImageLoaded(index) {
+        const item = this.items[index];
+        const img = item?.querySelector('img');
+        if (!img) return;
+
+        if (!img.getAttribute('src') && img.dataset.src) {
+            img.src = this.getBestSrc(img.dataset.src);
+        }
+
+        if (img.complete) {
+            img.classList.add('loaded');
+        } else {
+            img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
+        }
+    },
+
+    toggle() {
+        if (this.shownCount < this.items.length) {
+            this.showUpTo(this.shownCount + this.PAGE_SIZE, { animate: true });
+            return;
+        }
+        this.collapse();
+    },
+
+    collapse() {
+        const header = document.querySelector('header');
+        const offset = header ? Math.ceil(header.getBoundingClientRect().height) : 70;
+        const top = this.grid
+            ? this.grid.getBoundingClientRect().top + window.scrollY - offset - 16
+            : 0;
+        window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+        this.showUpTo(this.PAGE_SIZE);
+    },
+
+    syncButton() {
+        if (!this.button || !this.footer) return;
+        const extra = this.items.length > this.PAGE_SIZE;
+        this.footer.classList.toggle('is-visible', extra);
+        if (!extra) return;
+
+        if (this.shownCount < this.items.length) {
+            const remaining = this.items.length - this.shownCount;
+            const next = Math.min(this.PAGE_SIZE, remaining);
+            this.button.textContent = `Show ${next} more`;
+        } else {
+            this.button.textContent = 'Show less';
+        }
+    },
+
     initLightbox() {
-        // Create lightbox elements
         const lightbox = document.createElement('div');
         lightbox.id = 'lightbox';
         lightbox.className = 'lightbox';
+        lightbox.setAttribute('role', 'dialog');
+        lightbox.setAttribute('aria-modal', 'true');
+        lightbox.setAttribute('aria-label', 'Haircut gallery');
         lightbox.innerHTML = `
-            <button class="lightbox-close" aria-label="Close">&times;</button>
-            <button class="lightbox-prev" aria-label="Previous">&#10094;</button>
+            <button type="button" class="lightbox-close" aria-label="Close gallery">&times;</button>
+            <button type="button" class="lightbox-prev" aria-label="Previous haircut">&#10094;</button>
             <img class="lightbox-img" src="" alt="">
-            <button class="lightbox-next" aria-label="Next">&#10095;</button>
+            <button type="button" class="lightbox-next" aria-label="Next haircut">&#10095;</button>
+            <div class="lightbox-counter" aria-live="polite"></div>
         `;
         document.body.appendChild(lightbox);
+        this.lightbox = lightbox;
+        this.focusables = Array.from(lightbox.querySelectorAll('button'));
 
-        // Add click handlers to gallery images
-        const items = document.querySelectorAll('.gallery-item img');
-        items.forEach((img, index) => {
-            img.decoding = 'async';
-            img.addEventListener('click', () => this.openLightbox(index));
+        this.items.forEach((item, index) => {
+            item.addEventListener('click', () => this.openLightbox(index));
         });
 
-        // Close handlers
         lightbox.querySelector('.lightbox-close').addEventListener('click', () => this.closeLightbox());
         lightbox.addEventListener('click', (e) => {
             if (e.target === lightbox) this.closeLightbox();
         });
 
-        // Keyboard navigation
-        document.addEventListener('keydown', (e) => {
-            if (!lightbox.classList.contains('active')) return;
-            if (e.key === 'Escape') this.closeLightbox();
-            if (e.key === 'ArrowLeft') this.prevImage();
-            if (e.key === 'ArrowRight') this.nextImage();
-        });
-
-        // Prev/Next buttons
+        document.addEventListener('keydown', (e) => this.onKeydown(e));
         lightbox.querySelector('.lightbox-prev').addEventListener('click', () => this.prevImage());
         lightbox.querySelector('.lightbox-next').addEventListener('click', () => this.nextImage());
 
-        // Touch/Swipe support for mobile
         this.initSwipeHandlers(lightbox);
+    },
+
+    onKeydown(e) {
+        if (!this.lightbox?.classList.contains('active')) return;
+
+        if (e.key === 'Escape') {
+            e.preventDefault();
+            this.closeLightbox();
+            return;
+        }
+        if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            this.prevImage();
+            return;
+        }
+        if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            this.nextImage();
+            return;
+        }
+        if (e.key === 'Tab') {
+            this.trapFocus(e);
+        }
+    },
+
+    trapFocus(e) {
+        if (this.focusables.length === 0) return;
+        const first = this.focusables[0];
+        const last = this.focusables[this.focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+        }
     },
 
     initSwipeHandlers(lightbox) {
         let touchStartX = 0;
-        let touchEndX = 0;
         const minSwipeDistance = 50;
-
         const img = lightbox.querySelector('.lightbox-img');
 
-        img.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-        }, { passive: true });
+        const markStart = (x) => { touchStartX = x; };
+        const markEnd = (x) => {
+            const distance = x - touchStartX;
+            if (Math.abs(distance) > minSwipeDistance) {
+                if (distance > 0) this.prevImage();
+                else this.nextImage();
+            }
+        };
 
-        img.addEventListener('touchend', (e) => {
-            touchEndX = e.changedTouches[0].screenX;
-            this.handleSwipe(touchStartX, touchEndX, minSwipeDistance);
-        }, { passive: true });
-
-        // Also allow swiping on the entire lightbox background
+        img.addEventListener('touchstart', (e) => markStart(e.changedTouches[0].screenX), { passive: true });
+        img.addEventListener('touchend', (e) => markEnd(e.changedTouches[0].screenX), { passive: true });
         lightbox.addEventListener('touchstart', (e) => {
-            if (e.target === lightbox) {
-                touchStartX = e.changedTouches[0].screenX;
-            }
+            if (e.target === lightbox) markStart(e.changedTouches[0].screenX);
         }, { passive: true });
-
         lightbox.addEventListener('touchend', (e) => {
-            if (e.target === lightbox) {
-                touchEndX = e.changedTouches[0].screenX;
-                this.handleSwipe(touchStartX, touchEndX, minSwipeDistance);
-            }
+            if (e.target === lightbox) markEnd(e.changedTouches[0].screenX);
         }, { passive: true });
-    },
-
-    handleSwipe(startX, endX, minDistance) {
-        const swipeDistance = endX - startX;
-
-        if (Math.abs(swipeDistance) > minDistance) {
-            if (swipeDistance > 0) {
-                // Swiped right - go to previous
-                this.prevImage();
-            } else {
-                // Swiped left - go to next
-                this.nextImage();
-            }
-        }
     },
 
     openLightbox(index) {
-        this.ensureImageLoaded(index);
         this.currentImageIndex = index;
-        const lightbox = document.getElementById('lightbox');
-        const img = lightbox.querySelector('.lightbox-img');
-        const items = document.querySelectorAll('.gallery-item img');
-
-        img.src = items[index].src;
-        img.alt = items[index].alt;
-        lightbox.classList.add('active');
+        this.lastFocus = document.activeElement;
+        this.updateLightboxImage();
+        this.lightbox.classList.add('active');
         document.body.style.overflow = 'hidden';
+        this.lightbox.querySelector('.lightbox-close').focus();
     },
 
     closeLightbox() {
-        const lightbox = document.getElementById('lightbox');
-        lightbox.classList.remove('active');
+        this.lightbox.classList.remove('active');
         document.body.style.overflow = '';
+        if (this.lastFocus && typeof this.lastFocus.focus === 'function') {
+            this.lastFocus.focus();
+        }
     },
 
     prevImage() {
-        const items = document.querySelectorAll('.gallery-item img');
-        this.currentImageIndex = (this.currentImageIndex - 1 + items.length) % items.length;
+        this.currentImageIndex = (this.currentImageIndex - 1 + this.items.length) % this.items.length;
         this.updateLightboxImage();
     },
 
     nextImage() {
-        const items = document.querySelectorAll('.gallery-item img');
-        this.currentImageIndex = (this.currentImageIndex + 1) % items.length;
+        this.currentImageIndex = (this.currentImageIndex + 1) % this.items.length;
         this.updateLightboxImage();
     },
 
     updateLightboxImage() {
         this.ensureImageLoaded(this.currentImageIndex);
-        const items = document.querySelectorAll('.gallery-item img');
-        const lightbox = document.getElementById('lightbox');
-        const img = lightbox.querySelector('.lightbox-img');
-        img.src = items[this.currentImageIndex].src;
-        img.alt = items[this.currentImageIndex].alt;
-    },
+        const item = this.items[this.currentImageIndex];
+        const source = item?.querySelector('img');
+        const img = this.lightbox.querySelector('.lightbox-img');
+        const counter = this.lightbox.querySelector('.lightbox-counter');
+        if (!source || !img) return;
 
-    getHeaderOffset() {
-        const header = document.querySelector('header');
-        return header ? Math.ceil(header.getBoundingClientRect().height) : 70;
-    },
-
-    rememberOpenPosition() {
-        // Store where the user was when they expanded the gallery so "Show Less" can return them there.
-        this.openedAtY = window.scrollY;
-
-        if (this.buttonTop) {
-            const headerOffset = this.getHeaderOffset();
-            const rect = this.buttonTop.getBoundingClientRect();
-            const y = rect.top + window.scrollY - headerOffset - 16;
-            this.openedAtTargetY = Math.max(0, Math.floor(y));
-        } else {
-            this.openedAtTargetY = this.openedAtY;
+        img.src = source.src || this.getBestSrc(source.dataset.src);
+        img.alt = source.alt || item.dataset.caption || '';
+        if (counter) {
+            counter.textContent = `${this.currentImageIndex + 1} / ${this.items.length}`;
         }
-    },
-
-    returnToOpenPosition() {
-        const target = typeof this.openedAtTargetY === 'number' ? this.openedAtTargetY : this.openedAtY;
-        if (typeof target !== 'number') return;
-
-        window.scrollTo({ top: target, behavior: 'smooth' });
-    },
-
-    showInitialItems() {
-        if (!this.grid) return;
-
-        const items = this.grid.querySelectorAll('.gallery-item:nth-child(-n+4)');
-        items.forEach(item => {
-            item.classList.add('visible');
-        });
-    },
-
-    prepareDeferredImages() {
-        if (!this.grid) return;
-
-        const deferred = this.grid.querySelectorAll('.gallery-item:nth-child(n+5) img');
-        deferred.forEach((img) => {
-            if (img.dataset.src || !img.src) return;
-            img.dataset.src = img.getAttribute('src');
-            img.removeAttribute('src');
-        });
-    },
-
-    ensureImageLoaded(index) {
-        const items = document.querySelectorAll('.gallery-item img');
-        const img = items[index];
-        if (!img || img.getAttribute('src') || !img.dataset.src) return;
-
-        img.src = this.getBestSrc(img.dataset.src);
-        img.removeAttribute('data-src');
-    },
-
-    loadDeferredImages() {
-        if (!this.grid || this.deferredLoaded) return;
-
-        const deferred = this.grid.querySelectorAll('.gallery-item:nth-child(n+5) img');
-        deferred.forEach((img) => {
-            if (!img.getAttribute('src') && img.dataset.src) {
-                img.src = this.getBestSrc(img.dataset.src);
-                img.removeAttribute('data-src');
-            }
-        });
-
-        this.deferredLoaded = true;
-    },
-
-    toggle() {
-        if (!this.grid || !this.buttonTop) return;
-
-        if (this.isExpanded) {
-            this.collapse();
-        } else {
-            this.expand();
-        }
-
-        this.isExpanded = !this.isExpanded;
-    },
-
-    expand() {
-        this.rememberOpenPosition();
-        this.loadDeferredImages();
-        this.grid.classList.add('expanded');
-        this.setButtonText('Show Less');
-
-        // Show items 5+ with staggered animation
-        const items = this.grid.querySelectorAll('.gallery-item:nth-child(n+5)');
-        items.forEach((item, index) => {
-            item.style.display = 'block';
-            item.style.transitionDelay = `${index * 0.05}s`;
-            setTimeout(() => {
-                item.classList.add('visible');
-            }, 10);
-        });
-    },
-
-    collapse() {
-        // Scroll first so the browser doesn't keep us pinned to the bottom as the page height shrinks.
-        this.returnToOpenPosition();
-
-        this.grid.classList.remove('expanded');
-        this.setButtonText('Show More');
-
-        // Animate out items 5+
-        const items = this.grid.querySelectorAll('.gallery-item:nth-child(n+5)');
-        items.forEach(item => {
-            item.classList.remove('visible');
-            item.style.transitionDelay = '0s';
-        });
-
-        // Hide after animation
-        setTimeout(() => {
-            items.forEach(item => {
-                item.style.display = 'none';
-            });
-        }, 400);
-    },
-
-    setButtonText(text) {
-        if (this.buttonTop) this.buttonTop.textContent = text;
-        if (this.buttonBottom) this.buttonBottom.textContent = text === 'Show More' ? 'Show Less' : text;
-        // Note: bottom button is only visible when expanded (CSS).
-    },
-
-    syncButtons() {
-        // Ensure initial labels are correct if markup changes.
-        this.setButtonText(this.isExpanded ? 'Show Less' : 'Show More');
     }
 };
 
-// Global function for onclick handler
 function toggleGallery() {
     Gallery.toggle();
 }
 
-// Initialize on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
     Gallery.init();
 });

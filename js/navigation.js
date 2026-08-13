@@ -53,6 +53,8 @@ const Navigation = {
         }
         if (this.hamburger) {
             this.hamburger.classList.add('active');
+            this.hamburger.setAttribute('aria-expanded', 'true');
+            this.hamburger.setAttribute('aria-label', 'Close menu');
         }
         this.body.classList.add('noscroll');
     },
@@ -63,6 +65,8 @@ const Navigation = {
         }
         if (this.hamburger) {
             this.hamburger.classList.remove('active');
+            this.hamburger.setAttribute('aria-expanded', 'false');
+            this.hamburger.setAttribute('aria-label', 'Open menu');
         }
         this.body.classList.remove('noscroll');
     }

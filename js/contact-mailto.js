@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const name = document.getElementById('contactName')?.value?.trim() || '';
         const email = document.getElementById('contactEmail')?.value?.trim() || '';
+        const phone = document.getElementById('contactPhone')?.value?.trim() || '';
         const message = document.getElementById('contactMessage')?.value?.trim() || '';
         const company = form.elements.company?.value?.trim() || '';
 
@@ -31,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/.netlify/functions/contact', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, email, message, company })
+                body: JSON.stringify({ name, email, phone, message, company })
             });
 
             const data = await response.json().catch(() => ({}));
@@ -62,10 +63,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const body = [
             `Name: ${name}`,
             `Email: ${email}`,
+            phone ? `Phone: ${phone}` : null,
             '',
             'Message:',
             message
-        ].join('\n');
+        ].filter((line) => line !== null).join('\n');
 
         const mailto = `mailto:info@bandofmen.co.uk?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         window.location.href = mailto;

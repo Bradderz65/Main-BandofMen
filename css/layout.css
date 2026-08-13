@@ -219,11 +219,17 @@ header.scrolled {
     display: none;
     flex-direction: column;
     justify-content: space-between;
-    width: 28px;
-    height: 18px;
+    width: 44px;
+    height: 44px;
+    padding: 13px 8px;
+    margin: 0;
+    background: transparent;
+    border: 0;
     cursor: pointer;
     z-index: 3002;
     position: relative;
+    appearance: none;
+    -webkit-appearance: none;
 }
 
 .hamburger-btn span {
@@ -498,9 +504,27 @@ header.scrolled {
 /* --- Section Grids --- */
 .intro-grid {
     display: grid;
-    grid-template-columns: 5fr 1fr 6fr;
-    gap: 20px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: 48px;
     align-items: center;
+}
+
+.intro-photos {
+    display: grid;
+    gap: 16px;
+}
+
+.meet-barber {
+    margin: 8px 0 24px;
+    padding: 18px 0 4px;
+    border-top: 1px solid var(--border-subtle);
+}
+
+.meet-barber-name {
+    font-size: 1.15rem;
+    color: var(--accent-gold);
+    margin-bottom: 8px;
+    letter-spacing: 0.06em;
 }
 
 .about-stats-grid {
@@ -557,7 +581,7 @@ header.scrolled {
     margin-top: 30px;
 }
 
-.gallery-grid.expanded+.gallery-footer {
+.gallery-footer.is-visible {
     display: block;
 }
 
@@ -785,6 +809,29 @@ header.scrolled {
     margin-bottom: 40px;
 }
 
+.contact-parking {
+    margin-bottom: 16px;
+}
+
+.contact-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.contact-actions .btn-primary,
+.contact-actions .btn-ghost {
+    text-align: center;
+}
+
+.optional-label {
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 500;
+    color: #5d6d67;
+}
+
 .contact-subheading {
     margin-bottom: 10px;
     font-size: 0.95rem;
@@ -852,11 +899,59 @@ header.scrolled {
 /* --- Footer --- */
 footer {
     background: #030604;
-    padding: 50px 0 40px;
+    padding: 50px 0 32px;
     text-align: center;
     font-size: 0.8rem;
     color: #4a5550;
     position: relative;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr;
+    gap: 32px;
+    text-align: left;
+    max-width: 960px;
+}
+
+.footer-name,
+.footer-heading {
+    color: var(--accent-light);
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+.footer-hours p + p,
+.footer-brand p + p {
+    margin-top: 4px;
+}
+
+.footer-cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 14px;
+}
+
+.footer-cta-row a {
+    color: var(--accent-gold);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.footer-cta-row a:hover {
+    border-bottom: 1px solid rgba(197, 160, 89, 0.5);
+}
+
+.footer-copy {
+    margin-top: 28px;
+    text-align: center;
+    color: #3d4a45;
 }
 
 footer::before {

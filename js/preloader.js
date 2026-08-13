@@ -20,11 +20,28 @@ const Preloader = {
         this.loaderBar = document.getElementById('loaderBar');
         this.loaderText = document.getElementById('loaderText');
 
-        if (this.preloader) {
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        let seenBefore = false;
+        try {
+            seenBefore = window.localStorage.getItem('bom-seen') === '1';
+        } catch (e) {
+            seenBefore = false;
+        }
+
+        if (this.preloader && (seenBefore || reduceMotion)) {
+            this.hideImmediately();
+        } else if (this.preloader) {
             this.startPreloading();
         }
 
         this.setupLazyLoading();
+    },
+
+    hideImmediately() {
+        document.body.classList.remove('preloading');
+        if (this.preloader) {
+            this.preloader.remove();
+        }
     },
 
     updateProgress() {
@@ -89,6 +106,11 @@ const Preloader = {
                     setTimeout(() => {
                         if (this.preloader) {
                             this.preloader.remove();
+                        }
+                        try {
+                            window.localStorage.setItem('bom-seen', '1');
+                        } catch (e) {
+                            // Ignore private-mode storage failures.
                         }
                     }, 500);
                 }, 300);
