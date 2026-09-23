@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+Disallow: /account.html
+Disallow: /package.json
+Disallow: /package-lock.json
+Disallow: /netlify/
+Disallow: /.netlify/
+
+Sitemap: https://bandofmen.uk/sitemap.xml
