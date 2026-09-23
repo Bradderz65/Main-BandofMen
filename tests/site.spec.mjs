@@ -67,7 +67,7 @@ test('mobile menu, native anchors, resize and keyboard service tabs', async ({ p
     await expect(toggle).toHaveAttribute('aria-expanded', 'false');
 });
 
-test('gallery paging, modal focus, arrows, Escape and FAQ', async ({ page }) => {
+test('gallery paging, modal focus, arrows, Escape and enquiry disclosure', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator('.gallery-item:visible')).toHaveCount(6);
     const first = page.locator('.gallery-item').first();
@@ -87,8 +87,8 @@ test('gallery paging, modal focus, arrows, Escape and FAQ', async ({ page }) => 
     await expect(page.locator('.gallery-item:visible')).toHaveCount(42);
     await page.locator('#gallery-btn').click();
     await expect(page.locator('.gallery-item:visible')).toHaveCount(6);
-    await page.getByText('Do you take walk-ins?', { exact: true }).click();
-    await expect(page.getByText('The salon is appointment-only.', { exact: false })).toBeVisible();
+    await page.getByText('Send Sam a message', { exact: true }).click();
+    await expect(page.getByLabel('Your name', { exact: true })).toBeVisible();
 });
 
 async function fillEnquiry(page) {
@@ -99,6 +99,7 @@ async function fillEnquiry(page) {
 
 test('form validation, unavailable hosting, rate limiting, retry and success', async ({ page }) => {
     await page.goto('/');
+    await page.getByText('Send Sam a message', { exact: true }).click();
     let calls = 0;
     await page.route('**/.netlify/functions/contact', (route) => { calls++; return route.fulfill({ status: 404, body: 'Not found' }); });
     await page.getByRole('button', { name: 'Send message' }).click();

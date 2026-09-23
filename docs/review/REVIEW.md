@@ -2,7 +2,9 @@
 
 ## Design
 
-Rebuilt the site around the actual one-chair salon: warm paper backgrounds, deep green, restrained rust accents, condensed editorial headings and real salon photography. The page now explains the business directly, makes prices easier to compare, and keeps booking accessible on mobile.
+Rebuilt the site around the actual one-chair salon: forest green and brass drawn from the interior, a prominent serif wordmark, a parchment service menu and real salon photography. Each section has its own layout, with deliberate typography and spacing at phone, tablet and desktop sizes. Booking remains accessible on mobile.
+
+The refinement removes the duplicate exterior photo, repeated service strip, extra booking banner and overlapping FAQ content. Sam’s introduction and the existing customer reviews share one section. Visiting details appear together, with a native expandable enquiry panel below them. Prices appear once in the service menu, and all original service details remain available.
 
 The existing 37 services, their prices and durations, all 42 gallery photographs, business address and booking destination are preserved. The online Booksy comparison returned **37/37 services with no differences**. Static review totals were removed because they had become outdated; the existing individual testimonials and their Booksy attribution remain.
 
@@ -30,7 +32,7 @@ The existing 37 services, their prices and durations, all 42 gallery photographs
 
 - Build and seven backend/build tests pass.
 - Seven browser scenarios pass, including responsive layout at 320, 375, 390, 600, 768, 1024 and 1440 pixels; no horizontal overflow or uncaught page errors in those checks.
-- Service tabs, mobile navigation, gallery paging, focus handling, FAQ, invalid forms, unavailable hosting, rate limits, retry and success states checked.
+- Service tabs, mobile navigation, gallery paging, focus handling, enquiry disclosure, invalid forms, unavailable hosting, rate limits, retry and success states checked.
 - axe WCAG A/AA checks found zero violations at desktop and phone widths. Automated checks are not a complete accessibility certification.
 - JavaScript-disabled page exposes all 37 services, 42 photo links and working booking links.
 - A real browser test seeded the legacy worker and cache, then verified updated scripts loaded, the old salon cache was removed, and unrelated cache data remained intact.
@@ -40,7 +42,7 @@ The existing 37 services, their prices and durations, all 42 gallery photographs
 
 ## Hosting checks
 
-The contact function still needs a valid RESEND_API_KEY and verified sender domain on Netlify. Tests mock email delivery and do not establish inbox receipt. Netlify must confirm the rate-limit rule during deployment. GitHub Pages is static hosting and intentionally uses the email fallback when its function endpoint is unavailable.
+Netlify has the RESEND_API_KEY, RESEND_FROM and CONTACT_TO environment variables configured, and the contact endpoint responds on production. Tests mock email delivery and do not establish inbox receipt or sender-domain verification. GitHub Pages is static hosting and intentionally uses the email fallback when its function endpoint is unavailable.
 
 Opening hours were preserved from the existing site, including Europe/London daylight-saving handling. Holidays and exceptional hours are not fetched; the site directs visitors to Booksy for appointment availability.
 
