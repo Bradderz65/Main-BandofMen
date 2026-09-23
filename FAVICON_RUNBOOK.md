@@ -2,7 +2,7 @@
 
 This repo serves favicons from the `favicon/` folder and references them from:
 - `index.html`
-- `account.html`
+- `archive/account.html` (not published)
 - `favicon/site.webmanifest`
 
 ## Source Image
@@ -111,7 +111,8 @@ sha256sum /tmp/live_favicon32.png
 ## Deploy
 
 ```bash
-npx -y netlify-cli deploy --prod --dir . --functions netlify/functions --message "Update favicons"
+npm run build
+npx -y netlify-cli deploy --prod --dir dist --functions netlify/functions --message "Update favicons"
 ```
 
 ## Notes

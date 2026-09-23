@@ -1,87 +1,42 @@
-/* ============================================
-   BAND OF MEN - Navigation
-   ============================================
-   Mobile menu toggle and navigation handling
-   ============================================ */
-
-const Navigation = {
-    menu: null,
-    hamburger: null,
-    body: document.body,
-
-    init() {
-        this.menu = document.getElementById('mobileMenu');
-        this.hamburger = document.querySelector('.hamburger-btn');
-        
-        // Bind event handlers
-        this.bindEvents();
-    },
-
-    bindEvents() {
-        // Close menu on escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && this.isMenuOpen()) {
-                this.closeMenu();
+const toggle = document.getElementById('menuToggle');
+const menu = document.getElementById('mobileMenu');
+if (toggle && menu) {
+    toggle.hidden = false;
+    const closeMenu = (restoreFocus = false) => {
+        menu.hidden = true;
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.querySelector('.menu-toggle-label').textContent = 'Menu';
+        if (restoreFocus) toggle.focus();
+    };
+    toggle.addEventListener('click', () => {
+        const open = menu.hidden;
+        menu.hidden = !open;
+        toggle.setAttribute('aria-expanded', String(open));
+        toggle.querySelector('.menu-toggle-label').textContent = open ? 'Close' : 'Menu';
+    });
+    menu.addEventListener('click', (event) => {
+        const link = event.target.closest('a');
+        if (!link) return;
+        closeMenu();
+        if (link.hash && link.origin === location.origin) {
+            const target = document.getElementById(link.hash.slice(1));
+            if (target) {
+                target.setAttribute('tabindex', '-1');
+                target.focus({ preventScroll: true });
             }
-        });
-
-        // Close menu when clicking outside
-        if (this.menu) {
-            this.menu.addEventListener('click', (e) => {
-                if (e.target === this.menu) {
-                    this.closeMenu();
-                }
-            });
         }
-    },
-
-    isMenuOpen() {
-        return this.menu && this.menu.classList.contains('active');
-    },
-
-    toggleMenu() {
-        if (this.isMenuOpen()) {
-            this.closeMenu();
-        } else {
-            this.openMenu();
-        }
-    },
-
-    openMenu() {
-        if (this.menu) {
-            this.menu.classList.add('active');
-        }
-        if (this.hamburger) {
-            this.hamburger.classList.add('active');
-            this.hamburger.setAttribute('aria-expanded', 'true');
-            this.hamburger.setAttribute('aria-label', 'Close menu');
-        }
-        this.body.classList.add('noscroll');
-    },
-
-    closeMenu() {
-        if (this.menu) {
-            this.menu.classList.remove('active');
-        }
-        if (this.hamburger) {
-            this.hamburger.classList.remove('active');
-            this.hamburger.setAttribute('aria-expanded', 'false');
-            this.hamburger.setAttribute('aria-label', 'Open menu');
-        }
-        this.body.classList.remove('noscroll');
-    }
-};
-
-// Global functions for onclick handlers
-function toggleMenu() {
-    Navigation.toggleMenu();
+    });
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && !menu.hidden) closeMenu(true);
+    });
+    document.addEventListener('click', (event) => {
+        if (!menu.hidden && !event.target.closest('.site-header')) closeMenu();
+    });
+    // This is an inline disclosure, not a modal. Keyboard users can tab out.
+    document.querySelector('.site-header').addEventListener('focusout', (event) => {
+        if (event.relatedTarget && !event.currentTarget.contains(event.relatedTarget)) closeMenu();
+    });
+    matchMedia('(min-width: 851px)').addEventListener('change', (event) => {
+        if (event.matches) closeMenu();
+    });
 }
-
-function closeMenu() {
-    Navigation.closeMenu();
-}
-
-// Initialize on DOM ready
-document.addEventListener('DOMContentLoaded', () => {
-    Navigation.init();
-});

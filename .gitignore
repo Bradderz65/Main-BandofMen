@@ -7,3 +7,9 @@
 
 # Node modules
 node_modules
+
+# Build and verification output
+dist/
+test-results/
+playwright-report/
+.env.*

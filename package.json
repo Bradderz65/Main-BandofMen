@@ -4,14 +4,19 @@
   "description": "Band of Men Barber Salon Website",
   "type": "module",
   "scripts": {
-    "dev": "netlify dev",
+    "dev": "node scripts/dev.mjs",
     "sync:preview": "bash scripts/sync-preview.sh",
     "booksy:services": "node scripts/booksy-services.mjs",
-    "booksy:compare": "node scripts/compare-booksy-services.mjs"
+    "booksy:compare": "node scripts/compare-booksy-services.mjs",
+    "build": "node scripts/build.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "test:browser": "playwright test"
   },
-  "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "postgres": "^3.4.7",
-    "resend": "^2.0.0"
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "axe-core": "^4.13.0"
   }
 }

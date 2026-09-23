@@ -1,77 +1,46 @@
-# Band of Men Barber Salon 💈
+# Band of Men Barber Salon
 
-**Refined. Rugged. Rare.**
+The website for Sam’s one-chair barber salon at **200 Leadwell Lane, Robin Hood, Wakefield, WF3 3AE**. A responsive static site with real salon photography, a 37-service price list, a 42-photo gallery, Booksy booking links, opening hours and a contact form.
 
-Welcome to the official repository for the **Band of Men Barber Salon** website. This project showcases the digital storefront for a premier grooming destination located in Robin Hood, Wakefield, offering legendary cuts, hot towel shaves, and precision skin fades.
+## Development
 
-![Band of Men Banner](Photos/Branding/inside%20photo.jpeg)
+Requires Node.js 22 or newer.
 
-## 📖 About
-
-Band of Men is more than just a barber shop; it's a sanctuary for the modern man. Blending the heritage of traditional barbering with the precision of contemporary style, we offer an exclusive gentlemen's club atmosphere.
-
-**Location:** 200 Leadwell Lane, Robin Hood, Wakefield, WF3 3AA
-
-## ✨ Features
-
--   **Responsive Design:** A fully responsive layout that looks great on mobile, tablet, and desktop devices.
--   **Interactive Menu:** A dynamic service menu with tabs for Hair & Beard, Face & Body Wax, and Intimate services.
--   **Photo Gallery:** An expandable gallery showcasing our latest work and haircut styles.
--   **Booking Integration:** Direct links to Booksy for easy appointment scheduling.
--   **Performance Optimized:** Image preloading and lazy loading for a smooth user experience.
--   **Modern Aesthetics:** A dark, premium color palette (Deep Forest & Burnished Copper) with custom animations.
-
-## 🛠️ Technologies Used
-
--   **HTML5:** Semantic structure.
--   **CSS3:** Custom styling using CSS Variables, Flexbox, Grid, and responsive media queries.
--   **JavaScript:** Vanilla JS for the preloader, mobile menu, tab switching, and gallery interactions.
--   **Fonts:** Cinzel (Headings) and Manrope (Body) from Google Fonts.
-
-## 📁 Project Structure
-
-```
-BandOfMen-main/
-├── index.html              # Main HTML file
-├── README.md               # Project documentation
-├── css/                    # Stylesheets (modular)
-│   ├── variables.css       # CSS custom properties & design tokens
-│   ├── base.css            # Reset, typography, utilities
-│   ├── components.css      # Buttons, cards, preloader UI
-│   ├── layout.css          # Header, sections, grids, footer
-│   └── responsive.css      # Mobile/tablet breakpoints
-├── js/                     # JavaScript modules
-│   ├── preloader.js        # Image preloading & loading screen
-│   ├── navigation.js       # Mobile menu toggle
-│   ├── gallery.js          # Gallery expand/collapse
-│   ├── tabs.js             # Service menu tab switching
-│   └── main.js             # Smooth scroll & initialization
-└── Photos/                 # Image assets
-    ├── Branding/           # Logo, exterior, interior photos
-    └── Haircuts/           # Gallery haircut images (1-42)
+```sh
+npm ci
+npm run dev
 ```
 
-## 📸 Preview
+Open `http://127.0.0.1:4173`. The development server serves only the generated `dist/` directory and handles the contact endpoint locally. Run `npm run build` after editing while the server is running, then refresh. No email is sent unless the Resend configuration is present.
 
-### Desktop View
-The website features a stunning hero section with a video/image background, clear navigation, and a sophisticated dark theme.
+## Checks
 
-### Mobile Experience
-Optimized for touch with a custom hamburger menu, touch-friendly buttons, and smooth scrolling.
+```sh
+npm run build
+npm test
+npx playwright install chromium
+npm run test:browser
+npm run booksy:compare
+```
 
-## 🕒 Opening Hours
+Browser tests cover responsive layouts, images, keyboard navigation, service tabs, gallery focus and pagination, contact validation and recovery, JavaScript-disabled content, and axe accessibility checks. Email requests are mocked in tests; tests never send mail. Browser screenshots are written to `test-results/`.
 
-| Day | Hours |
-| :--- | :--- |
-| Mon - Wed | 09:00 - 18:00 |
-| Thu - Fri | 09:00 - 19:00 |
-| Sat | 08:00 - 16:00 |
-| Sun | Closed |
+## Publishing
 
-## 📞 Contact
+- **Netlify:** `npm run build` publishes `dist/`; `netlify/functions/contact.js` is the only deployed function. See [NETLIFY_RUNBOOK.md](NETLIFY_RUNBOOK.md).
+- **GitHub Pages:** the workflow builds and tests `dist/` and publishes that directory to `gh-pages`. This is static hosting; the contact form offers an email-app fallback because Netlify Functions do not run on Pages.
+- Account functionality was already disabled. Its source is retained in `archive/` and excluded from publishing. Do not deploy those functions without a separate review.
+- The legacy service worker is retired. Content-versioned script URLs and a cleanup worker prevent an old cached script from breaking an updated page.
 
--   **Phone:** 07538 740289
--   **Book Online:** [Booksy Link](https://booksy.com/en-gb/122744_band-of-men-barber-salon_barber_1485625_robin-hood)
+## Editing
 
----
-© 2025 Band of Men Barber Salon. All rights reserved.
+- `index.html`: content, prices, business metadata, photographs and links.
+- `css/site.css`: the complete responsive design.
+- `js/`: progressive enhancements. Content and booking links work without JavaScript.
+- `Photos/`: original photos and existing WebP variants.
+- `scripts/build.mjs`: an explicit list of public files; no server source or environment files are published.
+- `tests/`: backend/build and browser regression checks.
+
+Update visible opening hours and the structured data in `index.html` together with `js/open-status.js`. Always check prices against Booksy before changing them. The site does not hardcode changing review totals.
+
+See [the review report](docs/review/REVIEW.md) for the overhaul’s scope, evidence and remaining hosting checks.

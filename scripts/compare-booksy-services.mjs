@@ -115,7 +115,7 @@ function extractBooksyServices(url) {
 
 function extractLocalServices(localPath) {
   const html = fs.readFileSync(localPath, "utf8");
-  const menuMatch = html.match(/<h2>Service Menu<\/h2>[\s\S]*?<\/section>/);
+  const menuMatch = html.match(/<section id="pricing"[\s\S]*?<\/section>/);
 
   if (!menuMatch) {
     throw new Error(`Could not locate service menu in ${localPath}`);
@@ -126,7 +126,7 @@ function extractLocalServices(localPath) {
   let currentCategory = "";
   const tokens = [
     ...section.matchAll(
-      /<div class="cat-header">([\s\S]*?)<\/div>|<div class="pricing-row">([\s\S]*?<div class="p-price">[\s\S]*?<\/div>\s*<\/div>)/g,
+      /<h3 class="cat-header">([\s\S]*?)<\/h3>|<div class="pricing-row">([\s\S]*?<div class="p-price">[\s\S]*?<\/div>\s*<\/div>)/g,
     ),
   ];
 

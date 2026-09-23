@@ -1,160 +1,37 @@
-# Netlify Runbook (Band of Men)
+# Netlify operations
 
-This is a quick checklist for diagnosing and fixing common Netlify deploy and auth issues for this site.
+## Build
 
-## Basics (What Is Deployed)
+Use Node.js 22+, `npm ci`, then `npm run build`. Publish **dist/** with functions from **netlify/functions/**. Both settings are committed in `netlify.toml`. Never publish the repository root or deploy files from `archive/`.
 
-- Production URL: `https://bandofmen.uk`
-- Functions live under: `/.netlify/functions/*`
-- Local deploy folder: this directory
-- Functions source: `netlify/functions/`
-- Netlify config: `netlify.toml`
+The account UI was already disabled; the archived authentication and database maintenance functions are intentionally no longer deployed. No database migration is required for this redesign.
 
-## 1) If Images/CSS Backgrounds Are Missing
+## Contact form
 
-Netlify serves on Linux (case-sensitive paths). If you reference `Photos/...` but the folder is `photos/...`, assets will 404.
+The browser posts JSON to `/.netlify/functions/contact`. The only required secret is `RESEND_API_KEY`. The sender domain must be verified in Resend.
 
-Expected paths used by the site:
-- `Photos/Branding/...`
-- `Photos/Haircuts/...`
+Optional environment variables:
 
-Fix locally (example):
-```bash
-mv photos Photos
-mv Photos/branding Photos/Branding
-mv Photos/haircuts Photos/Haircuts
-```
+- `RESEND_FROM`: defaults to `Band of Men <send@bandofmen.uk>`.
+- `CONTACT_TO`: defaults to `info@bandofmen.co.uk`.
 
-## 2) If Signup/Login Shows "Failed (502)"
+The handler sends a single plain-text email to the salon and sets the visitor’s address as Reply-To. It does not send an automatic confirmation email to an unverified address. There are no runtime npm dependencies.
 
-A `502` from a Function usually means the function crashed at startup (common cause: missing node dependencies in the deployed bundle).
+The endpoint validates input, bounds the request size, and uses Netlify’s per-IP/domain limit of five requests per minute. Check the deploy’s post-processing log to confirm the rate-limit rule was accepted. Reference: [Netlify function rate limits](https://docs.netlify.com/manage/security/secure-access-to-sites/rate-limiting/).
 
-### Confirm the real error
-```bash
-curl -sS -D - -o /tmp/signup_body.txt \
-  -X POST "https://bandofmen.uk/.netlify/functions/signup" \
-  -H "content-type: application/json" \
-  --data '{"email":"debug@example.com","password":"password123","name":"Debug User"}' | head -50
-head -c 400 /tmp/signup_body.txt; echo
-```
+Missing configuration returns a generic 503. Provider problems return 502. The browser preserves all entered text and offers an explicit email-app fallback for unavailable hosting, server errors and timeouts. It reports successful sending only after a provider receipt. This confirms acceptance by the provider, not arrival in the recipient’s inbox.
 
-If you see something like "Cannot find package 'postgres' ...", go to the next step.
+## Verify a deployment
 
-### Fix: install deps before deploying with Netlify CLI
-This project expects `postgres`, `bcryptjs`, `resend` from `package.json`.
+1. Confirm the build command and publish directory, and that only `contact` is listed as a function.
+2. Open the site on desktop and mobile. Check the service tabs, gallery, mobile menu and booking links.
+3. Check a returning browser session: `sw.js` removes old `bom-static-*` caches and unregisters itself. New scripts have content-versioned URLs.
+4. Verify the configured sender and recipient. A real email delivery check needs an authorized test message and the salon’s inbox confirmation; the automated suite mocks email delivery.
+5. Confirm the code-based rate limit in the deployment log. It is enforced by Netlify, not the local development server.
+6. Confirm legacy `/account` URLs redirect and unknown pages return the custom 404.
 
-```bash
-npm ci
-```
+GitHub Pages cannot run the contact function. An explicit email fallback is expected on a Pages preview. Deploy previews do not verify production secrets, DNS or inbox delivery.
 
-Then redeploy (see Deploy section below).
+## Rollback
 
-## 3) If Signup/Login Returns a 500 With DB Errors
-
-Two common cases:
-
-### A) Missing DB URL env var
-Symptoms:
-- Error mentions `DATABASE_URL` or `NETLIFY_DATABASE_URL` missing.
-
-Fix:
-- In Netlify site settings, set one of:
-  - `DATABASE_URL` (your own Postgres URL), or
-  - Netlify DB integration vars: `NETLIFY_DATABASE_URL` / `NETLIFY_DATABASE_URL_UNPOOLED`
-
-### B) Missing tables (relation does not exist)
-Symptoms:
-- Error mentions `relation "users" does not exist` (or similar).
-
-Fix: initialize tables once:
-- Visit:
-  - `https://bandofmen.uk/.netlify/functions/init-db`
-or curl it:
-```bash
-curl -sS "https://bandofmen.uk/.netlify/functions/init-db" | head
-```
-
-## 4) If Verification Codes Are Not Emailing
-
-The email sender function requires:
-- `RESEND_API_KEY`
-Optional:
-- `RESEND_FROM` (defaults to `Band of Men <send@bandofmen.uk>`)
-
-If `RESEND_API_KEY` is missing, `/.netlify/functions/send-code` will return an error explaining that the provider is not configured.
-
-## 4b) If Website Contact Form Is Not Sending
-
-The website contact form posts to:
-- `/.netlify/functions/contact`
-
-Required:
-- `RESEND_API_KEY`
-
-Optional:
-- `RESEND_FROM` (defaults to `Band of Men <send@bandofmen.uk>`)
-- `CONTACT_TO` (defaults to `info@bandofmen.co.uk`)
-
-Quick test:
-```bash
-curl -sS -X POST "https://bandofmen.uk/.netlify/functions/contact" \
-  -H "content-type: application/json" \
-  --data '{"name":"Test User","email":"test@example.com","message":"Testing the website contact form."}'
-```
-
-## 5) Netlify CLI: Install/Use Without Global Install
-
-If `netlify` is not installed:
-```bash
-npx -y netlify-cli --version
-```
-
-Login (opens a browser flow):
-```bash
-npx -y netlify-cli login
-```
-
-## 6) Link This Folder to the Correct Netlify Site
-
-If `netlify status` says the folder is not linked:
-```bash
-npx -y netlify-cli sites:list --json | head
-```
-
-Then link by site id (recommended, non-interactive):
-```bash
-npx -y netlify-cli link --id 4e63ac4b-f3cb-4e05-a119-3e5c951fb73a
-```
-
-Confirm:
-```bash
-npx -y netlify-cli status
-```
-
-## 7) Deploy (Production)
-
-This site is deployed as static files from `.` plus Functions from `netlify/functions`.
-
-Recommended production deploy:
-```bash
-npx -y netlify-cli deploy --prod \
-  --dir . \
-  --functions netlify/functions \
-  --message "Deploy"
-```
-
-## 8) Check Function Logs
-
-Stream logs for a function (example: `signup`):
-```bash
-npx -y netlify-cli logs:function signup -l error warn info
-```
-
-## 9) If The Browser Still Shows Old JS
-
-The HTML cache-busts `js/auth.js` with a query param, for example:
-- `js/auth.js?v=YYYYMMDD`
-
-If you change `js/auth.js`, bump that `v=` value in:
-- `index.html`
-- `account.html`
+Revert the overhaul commit or restore a known deployment through Netlify. Do not enable the archived account functions as part of a rollback without reviewing their authorization first.
